@@ -1,0 +1,7 @@
+{
+  "name": "proyecto-libertad-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
