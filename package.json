@@ -1,6 +1,9 @@
 {
   "name": "proyecto-libertad-ionic",
   "version": "0.0.1",
+  "engines": {
+    "node": "12.18.1"
+  },
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.2.0",
