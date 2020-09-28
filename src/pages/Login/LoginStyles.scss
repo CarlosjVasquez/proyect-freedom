@@ -1,0 +1,22 @@
+.custom-item {
+  border-radius: 9999px;
+}
+
+.custom-input {
+  --placeholder-color: #fff;
+  --placeholder-opacity: 0.8;
+}
+
+.custom-date {
+  --placeholder-color: #fff;
+  --placeholder-opacity: 0.8;
+  padding: 0;
+}
+
+.message-custom {
+  --button-color: var(--ion-color-custom);
+}
+
+.message-custom-confirm {
+  --button-color: var(--ion-color-success);
+}

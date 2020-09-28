@@ -1,0 +1,11 @@
+.btn-custom {
+  --background: rgb(223, 56, 56);
+  --background: linear-gradient(
+    30deg,
+    rgb(231, 106, 106) 0%,
+    rgba(223, 56, 56, 1) 50%,
+    rgb(231, 106, 106) 100%
+  );
+  --border-radius: 9999px;
+  width: 100%;
+}
