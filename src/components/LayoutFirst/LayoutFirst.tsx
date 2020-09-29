@@ -10,10 +10,10 @@ const LayoutFirst: React.FC = ({ children }) => {
           <video
             className="background-video"
             src="./assets/video/backgroundVideo.m4v"
-            autoPlay={true}
-            loop={true}
-            muted={true}
-          ></video>
+            autoPlay
+            loop
+            muted
+          />
           {children}
         </IonGrid>
       </IonContent>
