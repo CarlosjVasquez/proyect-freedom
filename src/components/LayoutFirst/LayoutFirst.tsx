@@ -9,7 +9,7 @@ const LayoutFirst: React.FC = ({ children }) => {
         <IonGrid className="layout-first">
           <video
             className="background-video"
-            src="./assets/video/backgroundVideo.m4v"
+            src="./assets/video/backgroundVideo.mp4"
             autoPlay
             loop
             muted
