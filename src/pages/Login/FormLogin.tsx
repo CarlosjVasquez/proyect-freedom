@@ -1,10 +1,10 @@
 import React, { useState } from "react"
 import "./LoginStyles.scss"
-import { IonCol, IonRow, IonToast } from "@ionic/react"
+import { IonCol, IonRow, IonToast, IonLoading, } from "@ionic/react"
 
 import { personCircleOutline, alertCircle } from "ionicons/icons"
 
-import { gql, useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 
 import HeaderLogo from "../../components/HeaderLogo/HeaderLogo"
 import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
@@ -13,18 +13,16 @@ import BtnBack from "../../components/BtnBack/BtnBack"
 import BtnSecondary from "../../components/BtnSecondary/BtnSecondary"
 import InputPassword from "../../components/InputPassword/InputPassword"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
+import {Query} from "../../server/querys"
+
 
 interface Token {
   token: string | undefined
+  refreshToken: string | undefined
 }
 
-const all_Query = gql`
-  mutation($username: String!, $password: String!) {
-    tokenAuth(username: $username, password: $password) {
-      token
-    }
-  }
-`
+const login = Query.mutation.login;
+
 
 const FormLogin: React.FC = (props: any) => {
   const [userName, setUsername] = useState<string>("")
@@ -32,12 +30,13 @@ const FormLogin: React.FC = (props: any) => {
   const [error, setError] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
 
-  const [tokenAuth] = useMutation<{ tokenAuth: Token }>(all_Query, {
+  const [tokenAuth, {loading}] = useMutation<{ tokenAuth: Token }>(login, {
     variables: {
       username: userName,
       password: password,
     },
   })
+
 
   const onBackHandle = () => {
     props.history.push("/init")
@@ -57,6 +56,9 @@ const FormLogin: React.FC = (props: any) => {
     tokenAuth()
       .then((user) => {
         localStorage.setItem("token", user.data?.tokenAuth.token!)
+        localStorage.setItem("refreshToken", user.data?.tokenAuth.refreshToken!)
+        console.log(user.data?.tokenAuth.token!)
+        console.log(user.data?.tokenAuth.refreshToken!)
         setPassword("")
         setUsername("")
         props.history.push("/home")
@@ -70,6 +72,11 @@ const FormLogin: React.FC = (props: any) => {
 
   return (
     <LayoutFirst>
+      <IonLoading
+        cssClass="loading-custom"
+        isOpen={loading}
+        message="loading"
+      />
       <BtnBack onBack={onBackHandle} />
       <HeaderLogo />
       <IonRow>

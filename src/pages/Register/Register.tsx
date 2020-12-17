@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import {
-  cardOutline,
   personCircleOutline,
-  calendarOutline,
   mailOutline,
   alertCircle,
   checkmarkCircleOutline,
@@ -11,14 +9,10 @@ import {
   IonRow,
   IonCol,
   IonToast,
-  IonItem,
-  IonIcon,
-  IonInput,
-  IonDatetime,
   IonLoading,
 } from "@ionic/react"
 
-import { gql, useMutation } from "@apollo/client"
+import { useMutation } from "@apollo/client"
 
 import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
@@ -26,20 +20,11 @@ import InputPassword from "../../components/InputPassword/InputPassword"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
 import BtnBack from "../../components/BtnBack/BtnBack"
 import HeaderLogo from "../../components/HeaderLogo/HeaderLogo"
+import {Query} from "../../server/querys"
 
 import "./RegisterStyles.scss"
 
-const all_query = gql`
-  mutation($username: String!, $password: String!, $email: String!) {
-    createUser(username: $username, password: $password, email: $email) {
-      user {
-        username
-        password
-        email
-      }
-    }
-  }
-`
+const create = Query.mutation.create;
 
 const Register: React.FC = (props: any) => {
   const [username, setUsername] = useState<string>("")
@@ -58,12 +43,12 @@ const Register: React.FC = (props: any) => {
   const [messageConfirm, setMessageConfirm] = useState<string>("")
 
   const [createUser, { loading }] = useMutation<{ createUser: any }>(
-    all_query,
+    create,
     {
       variables: {
-        username,
-        password,
-        email,
+        username : username,
+        password : password,
+        email: email,
       },
     }
   )
@@ -115,6 +100,7 @@ const Register: React.FC = (props: any) => {
           'duplicate key value violates unique constraint "auth_user_username_key"'
         ) && setMessageError("Username already exists")
 
+        setMessageError(e)
         setErrorCreate(true)
       })
   }

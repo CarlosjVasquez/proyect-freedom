@@ -4,13 +4,14 @@ import "./BtnBackStyles.scss"
 
 const BtnBack: React.FC<{
   name?: String
+  color?: string
   onBack: () => void
 }> = (props) => {
   return (
     <IonRow className="row-btn-back">
       <IonCol>
         <IonButton
-          color="light"
+          color={props.color ? props.color : "light"}
           fill="clear"
           className="btn-back"
           onClick={props.onBack}

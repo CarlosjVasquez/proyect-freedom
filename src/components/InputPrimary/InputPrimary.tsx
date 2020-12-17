@@ -35,6 +35,7 @@ const InputPrimary: React.FC<{
         className="custom-input"
         placeholder={props.setPlaceholder}
         type={props.setType}
+        value={props.setValue}
       ></IonInput>
     </IonItem>
   )

@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.2.0",
+    "@capacitor/android": "^2.4.1",
     "@capacitor/core": "2.4.1",
     "@ionic/react": "^5.0.7",
     "@ionic/react-router": "^5.0.7",
