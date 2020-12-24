@@ -10,6 +10,7 @@ import {
   IonCol,
   IonToast,
   IonLoading,
+  IonPage,
 } from "@ionic/react"
 
 import { useMutation } from "@apollo/client"
@@ -19,8 +20,9 @@ import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 import InputPassword from "../../components/InputPassword/InputPassword"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
 import BtnBack from "../../components/BtnBack/BtnBack"
-import HeaderLogo from "../../components/HeaderLogo/HeaderLogo"
 import {Query} from "../../server/querys"
+import Footer from '../../components/Footer/Footer'
+import Title from '../../components/Title/Title'
 
 import "./RegisterStyles.scss"
 
@@ -28,12 +30,8 @@ const create = Query.mutation.create;
 
 const Register: React.FC = (props: any) => {
   const [username, setUsername] = useState<string>("")
-  const [firstName, setFirstName] = useState<string>("")
-  const [lastName, setLastName] = useState<string>("")
-  const [fechaN, setFechaN] = useState<Date>()
   const [email, setEmail] = useState<string>("")
   const [emailValidate, setEmailValidate] = useState<boolean>()
-  const [rut, setRut] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [confirmPassword, setConfirmPassword] = useState<string>("")
   const [passwordValidate, setPasswordValidate] = useState<boolean>(false)
@@ -109,6 +107,10 @@ const Register: React.FC = (props: any) => {
     props.history.push("/init")
   }
 
+  const onLogin = () => {
+    props.history.push('/login')
+  }
+
   const onPasswordHandle = (props: any) => {
     setPassword(props)
     setPasswordValidate(false)
@@ -132,65 +134,17 @@ const Register: React.FC = (props: any) => {
   }
 
   return (
-    <LayoutFirst>
+    <IonPage>
+      <BtnBack onBack={onBackHandle} />
+      <LayoutFirst>
       <IonLoading
         cssClass="loading-custom"
         isOpen={loading}
         message="loading"
       />
-      <BtnBack onBack={onBackHandle} />
-      <HeaderLogo />
+      <Title title="Register" color="transparent" />
       <IonRow className="card-page">
         <IonCol>
-          {/* <IonRow>
-            <IonCol>
-              <InputPrimary
-                onChangeValue={(props: any) => setRut(props)}
-                setIcon={cardOutline}
-                setValue={rut}
-                setPlaceholder="RUT"
-                setType="number"
-              />
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <InputPrimary
-                setValue={firstName}
-                setPlaceholder="First name"
-                setIcon={personCircleOutline}
-                onChangeValue={(props: any) => setFirstName(props)}
-              />
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <InputPrimary
-                setValue={lastName}
-                setPlaceholder="Last name"
-                setIcon={personCircleOutline}
-                onChangeValue={(props: any) => setLastName(props)}
-              />
-            </IonCol>
-          </IonRow>
-          <IonRow>
-            <IonCol>
-              <IonItem color="login" lines="none" className="custom-item">
-                <IonIcon
-                  color={fechaN ? "success" : "light"}
-                  slot="start"
-                  icon={calendarOutline}
-                ></IonIcon>
-                <IonDatetime
-                  className="custom-date"
-                  onIonChange={(e: CustomEvent) => setFechaN(e.detail.value)}
-                  displayFormat="DD MM YYYY"
-                  min="1980"
-                  placeholder="Birthdate"
-                ></IonDatetime>
-              </IonItem>
-            </IonCol>
-          </IonRow> */}
           <IonRow>
             <IonCol>
               <InputPrimary
@@ -267,6 +221,9 @@ const Register: React.FC = (props: any) => {
         />
       </IonRow>
     </LayoutFirst>
+    <Footer title="A verify have an account?" btn="Login" link={onLogin} />
+    </IonPage>
+    
   )
 }
 

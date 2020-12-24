@@ -1,11 +1,10 @@
 import React from "react"
 import "./LayoutFirstStyles.scss"
-import { IonPage, IonContent, IonGrid } from "@ionic/react"
+import { IonContent, IonGrid } from "@ionic/react"
 
 const LayoutFirst: React.FC = ({ children }) => {
   return (
-    <IonPage>
-      <IonContent className="content">
+      <IonContent slot="fixed" fullscreen>
         <IonGrid className="layout-first">
           <video
             className="background-video"
@@ -17,7 +16,6 @@ const LayoutFirst: React.FC = ({ children }) => {
           {children}
         </IonGrid>
       </IonContent>
-    </IonPage>
   )
 }
 

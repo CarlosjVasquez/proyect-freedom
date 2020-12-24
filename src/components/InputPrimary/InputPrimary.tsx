@@ -1,5 +1,6 @@
 import React from "react"
 import { IonItem, IonIcon, IonInput } from "@ionic/react"
+import "./InputPrimaryStyles.scss"
 
 const InputPrimary: React.FC<{
   setValue?: string
@@ -29,6 +30,7 @@ const InputPrimary: React.FC<{
         }
         slot="start"
         icon={props.setIcon}
+        className="custom-icon"
       ></IonIcon>
       <IonInput
         onIonChange={changeValue}

@@ -1,136 +1,100 @@
-import React, {useEffect, useState} from 'react'
-import InputPrimary from '../../components/InputPrimary/InputPrimary'
-import BtnBack from "../../components/BtnBack/BtnBack"
-import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
+import React, { useState, useEffect } from 'react'
+import { calendarOutline, call, cardOutline, personCircleOutline, alertCircle, personCircle, settings, checkmarkCircleOutline } from 'ionicons/icons'
+import { IonCol, IonContent, IonHeader, IonIcon, IonItem, IonLoading, IonPage, IonRow, IonTitle, IonToolbar, IonDatetime, IonGrid, IonThumbnail, IonImg, IonLabel, IonSelect, IonSelectOption, IonToast, IonButtons, IonButton } from "@ionic/react"
 
-import { useQuery, useMutation } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import {Query} from "../../server/querys"
 
-import {
-    IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonButton,
-    IonIcon,
-    IonContent,
-    IonRow,
-    IonCol,
-    IonToast,
-    IonLoading,
-    IonGrid,
-    IonItem, 
-    IonLabel,
-    IonSelectOption,
-    IonSelect,
-    IonDatetime
-} from '@ionic/react'
-import {personCircle, settings, alertCircle, personCircleOutline, cardOutline,call, calendarOutline, checkmarkCircleOutline} from 'ionicons/icons'
-
+import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
+import InputPrimary from "../../components/InputPrimary/InputPrimary"
 import Title from '../../components/Title/Title'
+import './RegisterDataStyles.scss'
 
 const update = Query.mutation.update
-const user = Query.query.userdata
+const user = Query.query.user
 
-const UserData: React.FC = (props:any) => {
-  const [firstname, setFirstname] = useState<string>("")
+const RegisterData: React.FC = (props: any) => {
+    const [firstname, setFirstname] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
     const [particularRut, setParticularRut] = useState<string>("")
     const [particularTlf, setParticularTlf] = useState<string>("")
     const [particularSexo, setParticularSexo] = useState<string>("")
     const [particularFechaNacimiento, setParticularFechaNacimiento] =     useState<Date>()
-    const [errorCreate, setErrorCreate] = useState<boolean>(false)
+    const token = localStorage.getItem('token')
+    const [iduser, setIduser] = useState<any>()
+    const [email, setEmail] = useState<string>("")
+    
+    const [error, setError] = useState<boolean>(false)
     const [messageError, setMessageError] = useState<string>("")
     const [confirmCreate, setConfirmCreate] = useState<boolean>(false)
     const [messageConfirm, setMessageConfirm] = useState<string>("")
-    const [iduser, setIduser] = useState<any>()
-    const [email, setEmail] = useState<string>("")
-  const token = localStorage.getItem('token')
 
-  const {loading, data} = useQuery<{ userslogs: any }>(user, {
-    variables: {
-      token: token
-    },
-    onCompleted: data => {
-      console.log(data)
-      setFirstname(data.userslogs.firstName)
-      setLastname(data.userslogs.lastName)
-      setParticularRut(data.userslogs.particularRut)
-      setParticularSexo(data.userslogs.particularSexo)
-      setParticularTlf(data.userslogs.particularTlf)
-      setParticularFechaNacimiento(data.userslogs.particularFechaNacimiento)
-      setIduser(data.userslogs.id)
-      setEmail(data.userslogs.email)
-    }
-  })
-
-  const onBackHandle = () => {
-    props.history.goBack()
-  }
-  
-  const [updateData] = useMutation<{ UpdateUserData: any }>(update, {
-    variables: {
-      id: iduser,
-      email: email,
-      firstName: firstname,
-      lastName: lastname,
-      particularRut: particularRut,
-      particularTlf: particularTlf,
-      particularSexo: particularSexo,
-    },
-  })
-
-  const registerData = () => {
-    if(firstname === ""){
-      setMessageError("Please, firstname is required")
-      setErrorCreate(true)
-      return
-    }
-    if(particularRut === ""){
-      setMessageError("Please, Rut is required")
-      setErrorCreate(true)
-      return
-    }
-    if(particularTlf === ""){
-      setMessageError("Please, Mobile is required")
-      setErrorCreate(true)
-      return
-    }
-    if(particularSexo === ""){
-      setMessageError("Please, Gender is required")
-      setErrorCreate(true)
-      return
-    }
-    if(particularFechaNacimiento === undefined){
-      setMessageError("Please, Birthdate is required")
-      setErrorCreate(true)
-      return
-    }
-
-    updateData()
-    .then(
-      () => {
-        setMessageConfirm("Register successful")
-        setConfirmCreate(true)
+    const {data} = useQuery<{ userslogs: any }>(user, {
+      variables: {
+        token: token
+      },
+      onCompleted: data => {
+        setIduser(data.userslogs.id)
+        setEmail(data.userslogs.email)
       }
-    )
-    .catch((e)=>{
-      setMessageError("Error")
-        setErrorCreate(true)
-        console.log(e)
     })
-  }
+    const [updateData, {loading}] = useMutation<{ UpdateUserData: any }>(update, {
+      variables: {
+        id: iduser,
+        email: email,
+        firstName: firstname,
+        lastName: lastname,
+        particularRut: particularRut,
+        particularTlf: particularTlf,
+        particularSexo: particularSexo,
+      },
+    })
 
-    return(
+    const registerData = () => {
+      if(firstname === ""){
+        setMessageError("Please, firstname is required")
+        setError(true)
+        return
+      }
+      if(particularRut === ""){
+        setMessageError("Please, Rut is required")
+        setError(true)
+        return
+      }
+      if(particularTlf === ""){
+        setMessageError("Please, Mobile is required")
+        setError(true)
+        return
+      }
+      if(particularSexo === ""){
+        setMessageError("Please, Gender is required")
+        setError(true)
+        return
+      }
+      if(particularFechaNacimiento === undefined){
+        setMessageError("Please, Birthdate is required")
+        setError(true)
+        return
+      }
+
+      updateData()
+      .then(
+        () => {
+          setMessageConfirm("Register successful")
+          setConfirmCreate(true)
+        }
+      )
+      .catch((e)=>{
+        setMessageError("Error")
+          setError(true)
+          console.log(e)
+      })
+    }
+
+    return (
         <IonPage>
-          <IonHeader>
+            <IonHeader>
         <IonToolbar color="primary">
-          <IonButtons slot="start">
-            <IonButton>
-            <BtnBack onBack={onBackHandle} /> 
-            </IonButton>
-          </IonButtons>
           <IonTitle>Hi, {data?.userslogs.username}</IonTitle>
           <IonButtons slot="secondary">
             <IonButton >
@@ -142,10 +106,27 @@ const UserData: React.FC = (props:any) => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonLoading isOpen={loading} message="loading" />
-          <IonContent color="light">
-          <IonGrid className="custom-grid">
-          <Title title="User Data" color="transparent" />
+            <IonLoading isOpen={loading} message="loading" />
+            <IonContent className="content" color="light">
+
+                <IonGrid className="custom-grid">
+                    {/*<IonRow>
+                        <IonCol className="custom-item-col" >
+                            <IonRow>
+                                <IonCol>
+                                    <IonThumbnail className="custom-thumbnail">
+                                        <IonImg src="https://res.cloudinary.com/carlosvv18/image/upload/v1608246195/sm3txyk6qwu2nwrartqd.png" />
+                                    </IonThumbnail>
+                                </IonCol>
+                            </IonRow>
+                            <IonRow>
+                                <IonCol>
+                                <IonLabel color="primary">username</IonLabel>
+                                </IonCol>
+                            </IonRow>
+                        </IonCol>
+                    </IonRow>*/}
+            <Title title="Register Data" color="transparent" />
             <IonRow>
             <IonCol>
               <InputPrimary
@@ -221,13 +202,13 @@ const UserData: React.FC = (props:any) => {
           </IonRow>
           <IonRow>
               <IonCol>
-                <BtnPrimary name="upload" onClickHandle={registerData} />
+                <BtnPrimary name="Register" onClickHandle={registerData} />
               </IonCol>
             </IonRow>
             <IonToast
             cssClass="message-custom"
-            isOpen={errorCreate}
-            onDidDismiss={() => setErrorCreate(false)}
+            isOpen={error}
+            onDidDismiss={() => setError(false)}
             message={messageError}
             duration={1500}
             buttons={[
@@ -240,7 +221,7 @@ const UserData: React.FC = (props:any) => {
           <IonToast
           cssClass="message-custom-confirm"
           isOpen={confirmCreate}
-          onDidDismiss={() => props.history.push("/userdata")}
+          onDidDismiss={() => props.history.push("/home")}
           message={messageConfirm}
           duration={1500}
           buttons={[
@@ -250,11 +231,10 @@ const UserData: React.FC = (props:any) => {
             },
           ]}
         />
-          </IonGrid>
-          
-          </IonContent>
+                </IonGrid>
+            </IonContent>
         </IonPage>
     )
 }
 
-export default UserData
+export default RegisterData

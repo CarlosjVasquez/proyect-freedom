@@ -13,7 +13,7 @@ const BtnPrimary: React.FC<{
       className="btn-custom"
       onClick={props.onClickHandle}
     >
-      <IonLabel>{props.name}</IonLabel>
+      <IonLabel >{props.name}</IonLabel>
     </IonButton>
   )
 }

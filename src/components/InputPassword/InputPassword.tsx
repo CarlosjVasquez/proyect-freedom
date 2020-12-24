@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { IonItem, IonInput, IonButton, IonIcon } from "@ionic/react"
 import { eyeOutline, eyeOffOutline, lockClosedOutline } from "ionicons/icons"
+import './InputPasswordStyles.scss'
 
 const InputPassword: React.FC<{
   setValue?: string
@@ -36,7 +37,8 @@ const InputPassword: React.FC<{
         }
         slot="start"
         icon={lockClosedOutline}
-      ></IonIcon>
+        className="custom-icon"
+      />
       <IonInput
         className="custom-input"
         onIonChange={inputChangeValue}

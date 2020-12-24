@@ -8,6 +8,7 @@ import Login from "./pages/Login/FormLogin"
 import Init from "./pages/Init/Initial"
 import Register from "./pages/Register/Register"
 import UserData from "./pages/UserData/UserData"
+import Registerdata from "./pages/RegisterData/RegisterData"
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -37,6 +38,7 @@ const App: React.FC = () => {
       <IonApp>
         <IonReactRouter>
           <IonRouterOutlet>
+            <Route path="/registerdata" component={Registerdata} />
             <Route path="/register" component={Register} />
             <Route path="/userdata" component={UserData} />
             <Route path="/login" component={Login} />

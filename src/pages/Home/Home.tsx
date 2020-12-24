@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   IonHeader,
   IonToolbar,
@@ -7,14 +7,32 @@ import {
   IonPage,
   IonButtons,
   IonButton,
-  IonIcon
+  IonIcon,
+  IonLoading,
 } from "@ionic/react";
+import { useQuery } from "@apollo/client"
 
-import { personCircle, search } from 'ionicons/icons';
-
+import { personCircle, settings } from 'ionicons/icons';
 import "./HomeStyles.scss"
+import {Query} from "../../server/querys"
+
+  
+const user = Query.query.user;
 
 const Home: React.FC = (props: any) => {
+
+  const token = localStorage.getItem('token')
+
+  const {loading, data} = useQuery<{ userslogs: any }>(user, {
+    variables: {
+      token: token
+    },
+    onCompleted: data => {
+      if (data.userslogs.particularActivar === false ){
+        props.history.push('/registerdata')
+      }
+    }
+  })
 
   const userData = () =>{
     props.history.push('/userdata');
@@ -23,15 +41,20 @@ const Home: React.FC = (props: any) => {
 
   return (
     <IonPage>
+      <IonLoading
+        cssClass="loading-custom"
+        isOpen={loading}
+        message="loading"
+      />
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Welcome</IonTitle>
+          <IonTitle>Hi, {data?.userslogs.username}</IonTitle>
           <IonButtons slot="secondary">
             <IonButton onClick={userData} >
               <IonIcon slot="icon-only" icon={personCircle} />
             </IonButton>
             <IonButton>
-              <IonIcon slot="icon-only" icon={search} />
+              <IonIcon slot="icon-only" icon={settings} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
