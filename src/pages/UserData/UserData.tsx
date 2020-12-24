@@ -40,6 +40,7 @@ const UserData: React.FC = (props:any) => {
     const [particularTlf, setParticularTlf] = useState<string>("")
     const [particularSexo, setParticularSexo] = useState<string>("")
     const [particularFechaNacimiento, setParticularFechaNacimiento] =     useState<Date>()
+    const [username, setUsername] = useState<string>()
     const [errorCreate, setErrorCreate] = useState<boolean>(false)
     const [messageError, setMessageError] = useState<string>("")
     const [confirmCreate, setConfirmCreate] = useState<boolean>(false)
@@ -53,7 +54,6 @@ const UserData: React.FC = (props:any) => {
       token: token
     },
     onCompleted: data => {
-      console.log(data)
       setFirstname(data.userslogs.firstName)
       setLastname(data.userslogs.lastName)
       setParticularRut(data.userslogs.particularRut)
@@ -62,6 +62,7 @@ const UserData: React.FC = (props:any) => {
       setParticularFechaNacimiento(data.userslogs.particularFechaNacimiento)
       setIduser(data.userslogs.id)
       setEmail(data.userslogs.email)
+      setUsername(data.userslogs.username)
     }
   })
 
@@ -131,7 +132,7 @@ const UserData: React.FC = (props:any) => {
             <BtnBack onBack={onBackHandle} /> 
             </IonButton>
           </IonButtons>
-          <IonTitle>Hi, {data?.userslogs.username}</IonTitle>
+          <IonTitle>Hi, {username}</IonTitle>
           <IonButtons slot="secondary">
             <IonButton >
               <IonIcon slot="icon-only" icon={personCircle} />

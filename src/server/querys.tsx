@@ -18,6 +18,7 @@ export const Query = {
         userslogs(token:$token){
           id,
           email,
+          username,
           firstName,
           lastName,
           particularRut,
