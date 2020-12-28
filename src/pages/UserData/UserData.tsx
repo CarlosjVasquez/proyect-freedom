@@ -65,15 +65,6 @@ const UserData: React.FC = (props:any) => {
   })
 
   const onBackHandle = () => {
-    setFirstname('')
-      setLastname('')
-      setParticularRut('')
-      setParticularSexo('')
-      setParticularTlf('')
-      setParticularFechaNacimiento('')
-      setIduser('')
-      setEmail('')
-      setUsername('')
     props.history.push('/home')
   }
   
