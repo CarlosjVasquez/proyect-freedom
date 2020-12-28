@@ -1,5 +1,5 @@
 import React from "react"
-import { IonItem, IonIcon, IonInput } from "@ionic/react"
+import { IonItem, IonIcon, IonInput, IonSelect, IonSelectOption } from "@ionic/react"
 import "./InputPrimaryStyles.scss"
 
 const InputPrimary: React.FC<{
@@ -7,6 +7,8 @@ const InputPrimary: React.FC<{
   setIcon?: any
   setPlaceholder?: string
   setType?: "text" | "number" | "email"
+  select?: boolean | undefined
+  options?: any
   onChangeValue?: (value: any) => void
   validate?: boolean
 }> = (props) => {
@@ -32,13 +34,30 @@ const InputPrimary: React.FC<{
         icon={props.setIcon}
         className="custom-icon"
       ></IonIcon>
-      <IonInput
+      {
+        !props.select ? (
+          <IonInput
         onIonChange={changeValue}
         className="custom-input"
         placeholder={props.setPlaceholder}
         type={props.setType}
         value={props.setValue}
-      ></IonInput>
+      />
+        ) :
+        (
+          <IonSelect value={props.setValue} 
+          placeholder={props.setPlaceholder}   
+          onIonChange={changeValue}
+          className="custom-input">
+            {
+              props.options.map((user: any, key: any) => (
+                <IonSelectOption key={key} value={user.option.toLowerCase()}>{user.option}</IonSelectOption>
+              ))
+            }
+          </IonSelect>
+        )
+      }
+      
     </IonItem>
   )
 }

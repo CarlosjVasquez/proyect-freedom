@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { calendarOutline, call, cardOutline, personCircleOutline, alertCircle, personCircle, settings, checkmarkCircleOutline } from 'ionicons/icons'
-import { IonCol, IonContent, IonHeader, IonIcon, IonItem, IonLoading, IonPage, IonRow, IonTitle, IonToolbar, IonDatetime, IonGrid, IonThumbnail, IonImg, IonLabel, IonSelect, IonSelectOption, IonToast, IonButtons, IonButton } from "@ionic/react"
+import { IonCol, IonContent, IonHeader, IonIcon, IonItem, IonLoading, IonPage, IonRow, IonTitle, IonToolbar, IonDatetime, IonGrid, IonToast, IonButtons, IonButton } from "@ionic/react"
 
 import { useMutation, useQuery } from "@apollo/client"
 import {Query} from "../../server/querys"
@@ -110,22 +110,6 @@ const RegisterData: React.FC = (props: any) => {
             <IonContent className="content" color="light">
 
                 <IonGrid className="custom-grid">
-                    {/*<IonRow>
-                        <IonCol className="custom-item-col" >
-                            <IonRow>
-                                <IonCol>
-                                    <IonThumbnail className="custom-thumbnail">
-                                        <IonImg src="https://res.cloudinary.com/carlosvv18/image/upload/v1608246195/sm3txyk6qwu2nwrartqd.png" />
-                                    </IonThumbnail>
-                                </IonCol>
-                            </IonRow>
-                            <IonRow>
-                                <IonCol>
-                                <IonLabel color="primary">username</IonLabel>
-                                </IonCol>
-                            </IonRow>
-                        </IonCol>
-                    </IonRow>*/}
             <Title title="Register Data" color="transparent" />
             <IonRow>
             <IonCol>
@@ -170,15 +154,18 @@ const RegisterData: React.FC = (props: any) => {
           </IonRow>
           <IonRow>
             <IonCol>
-            <IonItem>
-              <IonLabel>Gender</IonLabel>
-              <IonSelect value={particularSexo} 
-              placeholder="Select One"   
-              onIonChange={e => setParticularSexo(e.detail.value)}>
-                <IonSelectOption value="female">Female</IonSelectOption>
-                <IonSelectOption value="male">Male</IonSelectOption>
-              </IonSelect>
-            </IonItem>
+            <InputPrimary
+              onChangeValue={(props: any)=> setParticularSexo(props)}
+              setIcon={personCircleOutline}
+              setValue={particularSexo}
+              setPlaceholder="Gender"
+              select={true}
+              options={[
+                  {option: 'Male'},
+                  {option: 'Female'},
+                ]
+              }
+              />
             </IonCol>
           </IonRow>
           <IonRow>

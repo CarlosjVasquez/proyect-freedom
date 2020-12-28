@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useState } from 'react'
 import InputPrimary from '../../components/InputPrimary/InputPrimary'
 import BtnBack from "../../components/BtnBack/BtnBack"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
@@ -21,14 +21,12 @@ import {
     IonLoading,
     IonGrid,
     IonItem, 
-    IonLabel,
-    IonSelectOption,
-    IonSelect,
     IonDatetime
 } from '@ionic/react'
 import {personCircle, settings, alertCircle, personCircleOutline, cardOutline,call, calendarOutline, checkmarkCircleOutline} from 'ionicons/icons'
 
 import Title from '../../components/Title/Title'
+import './UserData.scss'
 
 const update = Query.mutation.update
 const user = Query.query.userdata
@@ -39,7 +37,7 @@ const UserData: React.FC = (props:any) => {
     const [particularRut, setParticularRut] = useState<string>("")
     const [particularTlf, setParticularTlf] = useState<string>("")
     const [particularSexo, setParticularSexo] = useState<string>("")
-    const [particularFechaNacimiento, setParticularFechaNacimiento] =     useState<Date>()
+    const [particularFechaNacimiento, setParticularFechaNacimiento] =     useState<string>()
     const [username, setUsername] = useState<string>()
     const [errorCreate, setErrorCreate] = useState<boolean>(false)
     const [messageError, setMessageError] = useState<string>("")
@@ -49,7 +47,7 @@ const UserData: React.FC = (props:any) => {
     const [email, setEmail] = useState<string>("")
   const token = localStorage.getItem('token')
 
-  const {loading, data} = useQuery<{ userslogs: any }>(user, {
+  const {loading} = useQuery<{ userslogs: any }>(user, {
     variables: {
       token: token
     },
@@ -67,7 +65,16 @@ const UserData: React.FC = (props:any) => {
   })
 
   const onBackHandle = () => {
-    props.history.goBack()
+    setFirstname('')
+      setLastname('')
+      setParticularRut('')
+      setParticularSexo('')
+      setParticularTlf('')
+      setParticularFechaNacimiento('')
+      setIduser('')
+      setEmail('')
+      setUsername('')
+    props.history.push('/home')
   }
   
   const [updateData] = useMutation<{ UpdateUserData: any }>(update, {
@@ -114,6 +121,7 @@ const UserData: React.FC = (props:any) => {
       () => {
         setMessageConfirm("Register successful")
         setConfirmCreate(true)
+        console.log(particularFechaNacimiento)
       }
     )
     .catch((e)=>{
@@ -132,7 +140,7 @@ const UserData: React.FC = (props:any) => {
             <BtnBack onBack={onBackHandle} /> 
             </IonButton>
           </IonButtons>
-          <IonTitle>Hi, {username}</IonTitle>
+          <IonTitle className="title-user">{username}</IonTitle>
           <IonButtons slot="secondary">
             <IonButton >
               <IonIcon slot="icon-only" icon={personCircle} />
@@ -190,15 +198,18 @@ const UserData: React.FC = (props:any) => {
           </IonRow>
           <IonRow>
             <IonCol>
-            <IonItem>
-              <IonLabel>Gender</IonLabel>
-              <IonSelect value={particularSexo} 
-              placeholder="Select One"   
-              onIonChange={e => setParticularSexo(e.detail.value)}>
-                <IonSelectOption value="female">Female</IonSelectOption>
-                <IonSelectOption value="male">Male</IonSelectOption>
-              </IonSelect>
-            </IonItem>
+              <InputPrimary
+              onChangeValue={(props: any)=> setParticularSexo(props)}
+              setIcon={personCircleOutline}
+              setValue={particularSexo}
+              setPlaceholder="Gender"
+              select={true}
+              options={[
+                  {option: 'Male'},
+                  {option: 'Female'},
+                ]
+              }
+              />
             </IonCol>
           </IonRow>
           <IonRow>
@@ -216,6 +227,7 @@ const UserData: React.FC = (props:any) => {
                 min="1980"
                 placeholder="Birthdate"
                 className="custom-date"
+                value={particularFechaNacimiento}
                 />
               </IonItem>
             </IonCol>
