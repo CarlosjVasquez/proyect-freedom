@@ -20,7 +20,7 @@ const InputPrimary: React.FC<{
     <IonItem color="login" lines="none" className="custom-item">
       <IonIcon
         color={
-          props.setType === "email"
+          props.setType === "email" || props.validate !== undefined
             ? props.setValue
               ? props.validate
                 ? "success"
@@ -44,7 +44,7 @@ const InputPrimary: React.FC<{
         value={props.setValue}
       />
         ) :
-        (
+        ( 
           <IonSelect value={props.setValue} 
           placeholder={props.setPlaceholder}   
           onIonChange={changeValue}

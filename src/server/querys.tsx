@@ -1,4 +1,3 @@
-
 import { gql } from "@apollo/client"
 
 export const Query = {
@@ -6,25 +5,23 @@ export const Query = {
     user: gql`
         query($token: String!){
           userslogs(token:$token){
-            id
             username
             email
-            particularActivar
+            activar
           }
         }
       `,
     userdata:gql`
       query($token: String!){
         userslogs(token:$token){
-          id,
           email,
           username,
           firstName,
           lastName,
-          particularRut,
-          particularTlf,
-          particularSexo,
-          particularFechaNacimiento,
+          rut,
+          tlf,
+          sexo,
+          fechaNacimiento,
         }
       }
     `
@@ -38,72 +35,65 @@ export const Query = {
           }
         }
       `,
-    refreshToken: gql`
-      mutation($rToken: String!){
-        refreshToken(refreshToken:$rToken){
-          token
-        }
-      }
-    `,
     create: gql`
       mutation(
         $username: String!,
-        $password: String!,
+        $password1: String!,
+        $password2: String!,
         $email: String!,
       ){
-        CreateUserProfiles(
+        register(
           username: $username,
-          password: $password,
+          password1: $password1,
+          password2: $password2,
           email: $email,
           firstName: "",
           lastName: "",
-          particularRut: "",
-          particularTlf: "",
-          particularSexo: "",
-          particularFechaNacimiento: "2019-06-11T05:48:11.023255+00:00",
+          rut: "",
+          tlf: "",
+          sexo: "",
+          fechaNacimiento: "",
         ){
-          userdetalle{
-            id
-      username
-      password
-      email
-      firstName
-      lastName
-      particularRut
-      particularTlf
-      particularTlf
-      particularFechaNacimiento
-      particularActivar
-          }
+          success
+          errors
+        }
+      }
+    `,
+    verifyAccount: gql`
+      mutation(
+        $token: String!
+      ){
+        verifyAccount(
+          token: $token
+        ){
+          success
+          errors
         }
       }
     `,
     update:gql`
       mutation(
-        $id: ID!,
         $email: String!,
         $firstName: String!,
         $lastName: String!, 
-        $particularRut: String!,
-        $particularTlf: String!,
-        $particularSexo: String!,
+        $rut: String!,
+        $tlf: String!,
+        $sexo: String!,
+        $fechaNacimiento: String!,
       ){
         UpdateUserData(
           input:{
-            id: $id,
             email: $email,
             firstName: $firstName,
             lastName: $lastName,
-            particularRut: $particularRut,
-            particularTlf: $particularTlf,
-            particularSexo: $particularSexo,
-            particularFechaNacimiento: "2019-06-11T05:48:11.023255+00:00",
-            particularActivar: true,
+            rut: $rut,
+            tlf: $tlf,
+            sexo: $sexo,
+            fechaNacimiento: $fechaNacimiento,
           }
         ){
-          userUpdate{
-            particularActivar
-          }
+          success
+          errors
         }
       }
     `

@@ -2,6 +2,9 @@ import React from "react"
 import { Redirect, Route } from "react-router-dom"
 import { IonApp, IonRouterOutlet } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
+import { ToastProvider } from "@agney/ir-toast";
+
+
 
 import Home from "./pages/Home/Home"
 import Login from "./pages/Login/FormLogin"
@@ -9,6 +12,7 @@ import Init from "./pages/Init/Initial"
 import Register from "./pages/Register/Register"
 import UserData from "./pages/UserData/UserData"
 import Registerdata from "./pages/RegisterData/RegisterData"
+import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail'
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -36,8 +40,10 @@ const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
       <IonApp>
+        <ToastProvider>
         <IonReactRouter>
           <IonRouterOutlet>
+            <Route path="/confirmemail/:id" component={ConfirmEmail} />
             <Route path="/registerdata" component={Registerdata} />
             <Route path="/register" component={Register} />
             <Route path="/userdata" component={UserData} />
@@ -47,6 +53,7 @@ const App: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/init" />} />
           </IonRouterOutlet>
         </IonReactRouter>
+        </ToastProvider>
       </IonApp>
     </ApolloProvider>
   )
