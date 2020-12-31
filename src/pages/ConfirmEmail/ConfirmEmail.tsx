@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useMutation } from "@apollo/client"
 
@@ -18,7 +18,7 @@ interface UserDetailPageProps extends RouteComponentProps<{
 const ConfirmEmail: React.FC<UserDetailPageProps> = ({match}) => {
     const [active, setActive] = useState<boolean>(true)
 
-    useMutation<{ verifyAccount: any }>(
+    const [verifyEmail] = useMutation<{ verifyAccount: any }>(
         verify,
         {
             variables: {
@@ -29,6 +29,12 @@ const ConfirmEmail: React.FC<UserDetailPageProps> = ({match}) => {
             }
         }
       ) 
+      
+      useEffect(() => {
+          
+        verifyEmail()
+         
+      }, [verifyEmail])
     return(
         <IonPage>
             <LayoutFirst>
