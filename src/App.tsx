@@ -2,7 +2,6 @@ import React from "react"
 import { Redirect, Route } from "react-router-dom"
 import { IonApp, IonRouterOutlet } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
-import { ToastProvider } from "@agney/ir-toast";
 
 
 
@@ -40,7 +39,6 @@ const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
       <IonApp>
-        <ToastProvider>
         <IonReactRouter>
           <IonRouterOutlet>
             <Route path="/confirmemail/:id" component={ConfirmEmail} />
@@ -53,7 +51,6 @@ const App: React.FC = () => {
             <Route exact path="/" render={() => <Redirect to="/init" />} />
           </IonRouterOutlet>
         </IonReactRouter>
-        </ToastProvider>
       </IonApp>
     </ApolloProvider>
   )
