@@ -12,6 +12,9 @@ import Register from "./pages/Register/Register"
 import UserData from "./pages/UserData/UserData"
 import Registerdata from "./pages/RegisterData/RegisterData"
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail'
+import ListFile from './pages/Files/ListFiles'
+import ResetPasswordEmail from './pages/ResetPassword/ResetPasswordEmail'
+import ResetPassword from './pages/ResetPassword/ResetPassword'
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -41,6 +44,9 @@ const App: React.FC = () => {
       <IonApp>
         <IonReactRouter>
           <IonRouterOutlet>
+            <Route path="/resetpassword/:id" component={ResetPassword} />
+            <Route path="/resetpasswordemail" component={ResetPasswordEmail} />
+            <Route path="/listfiles" component={ListFile} />
             <Route path="/confirmemail/:id" component={ConfirmEmail} />
             <Route path="/registerdata" component={Registerdata} />
             <Route path="/register" component={Register} />

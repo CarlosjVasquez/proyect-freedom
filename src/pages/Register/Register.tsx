@@ -4,7 +4,6 @@ import {
   personCircleOutline,
   mailOutline,
   alertCircle,
-  checkmarkCircleOutline,
 } from "ionicons/icons"
 import {
   IonRow,
@@ -48,7 +47,6 @@ const Register: React.FC = (props: any) => {
   const [errorCreate, setErrorCreate] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
   const [confirmCreate, setConfirmCreate] = useState<boolean>(false)
-  const [messageConfirm, setMessageConfirm] = useState<string>("")
   const [btnRegister, setBtnRegister] = useState<boolean>(true)
 
   const [createUser, { loading }] = useMutation<{ register: any }>(
@@ -66,9 +64,9 @@ const Register: React.FC = (props: any) => {
           setMessageError('error')
           setErrorCreate(true)
         } else {
-          setMessageConfirm("Register successful")
           setConfirmCreate(true)
-          console.log(register)
+          localStorage.setItem("token", register.token!)
+          localStorage.setItem("refreshToken", register.refreshToken!)
         }
       }
     }
@@ -106,24 +104,6 @@ const Register: React.FC = (props: any) => {
     }
 
     createUser()
-
-    /*createUser()
-      .then(({data}) => {
-        if(data?.register){
-
-        }
-        setMessageConfirm("Register successful")
-        setConfirmCreate(true)
-        console.log(data)
-      })
-      .catch((e) => {
-        e.message.includes(
-          'duplicate key value violates unique constraint "auth_user_username_key"'
-        ) && setMessageError("Username already exists")
-
-        setMessageError(e)
-        setErrorCreate(true)
-      })*/
   }
 
   const onBackHandle = () => {
@@ -327,7 +307,8 @@ const Register: React.FC = (props: any) => {
         <Toast active={errorNumbers} message="This password must contain numbers" />
         <Toast active={errorMinMax} message="This password It must contain between 8 and 16 characters" />
         <Toast active={errorUserNameSimilarity} message="It should not be similar to the username." />
-        <IonToast
+        <Toast active={confirmCreate} confirm={true} message="Register successful, Please confirm your email to continue with the experience" />
+        {/* <IonToast
           cssClass="message-custom-confirm"
           isOpen={confirmCreate}
           //onDidDismiss={() => props.history.push("/login")}
@@ -339,7 +320,7 @@ const Register: React.FC = (props: any) => {
               icon: checkmarkCircleOutline,
             },
           ]}
-        />
+        /> */}
       </IonRow>
     </LayoutFirst>
     <Footer title="A verify have an account?" btn="Login" link={onLogin} />

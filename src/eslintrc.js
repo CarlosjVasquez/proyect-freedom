@@ -17,5 +17,6 @@ module.exports = {
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "new-cap": "off",
+    "jsx-a11y/alt-text": "off",
   },
-};
+}

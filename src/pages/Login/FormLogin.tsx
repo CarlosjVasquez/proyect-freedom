@@ -44,7 +44,7 @@ const FormLogin: React.FC = (props: any) => {
   }
 
   const forgotPassword = () => {
-    console.log('password')
+    props.history.push('/resetpasswordemail')
   }
 
   const onRegister = () => {
@@ -66,8 +66,7 @@ const FormLogin: React.FC = (props: any) => {
       .then((user) => {
         localStorage.setItem("token", user.data?.tokenAuth.token!)
         localStorage.setItem("refreshToken", user.data?.tokenAuth.refreshToken!)
-        console.log(user.data?.tokenAuth.token!)
-        console.log(user.data?.tokenAuth.refreshToken!)
+        
         setPassword("")
         setUsername("")
         props.history.push("/home")
@@ -117,7 +116,7 @@ const FormLogin: React.FC = (props: any) => {
             </IonRow>
             <IonRow>
               <IonCol>
-                <BtnSecondary name="forgot password?" onClickHandle={ ()=> forgotPassword} />
+                <BtnSecondary name="forgot password?" onClickHandle={ ()=> forgotPassword()} />
               </IonCol>
             </IonRow>
           </IonCol>

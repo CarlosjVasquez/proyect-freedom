@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { calendarOutline, call, cardOutline, personCircleOutline, alertCircle, personCircle, settings, checkmarkCircleOutline } from 'ionicons/icons'
 import { IonCol, IonContent, IonHeader, IonIcon, IonItem, IonLoading, IonPage, IonRow, IonTitle, IonToolbar, IonDatetime, IonGrid, IonToast, IonButtons, IonButton } from "@ionic/react"
 
@@ -8,46 +8,72 @@ import {Query} from "../../server/querys"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
 import Title from '../../components/Title/Title'
+import Toast from '../../components/Toast/Toast'
 import './RegisterDataStyles.scss'
 
 const update = Query.mutation.update
 const user = Query.query.user
 
 const RegisterData: React.FC = (props: any) => {
+    const [username, setUsername] = useState<string>("")
     const [firstname, setFirstname] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
-    const [particularRut, setParticularRut] = useState<string>("")
-    const [particularTlf, setParticularTlf] = useState<string>("")
-    const [particularSexo, setParticularSexo] = useState<string>("")
-    const [particularFechaNacimiento, setParticularFechaNacimiento] =     useState<Date>()
+    const [rut, setRut] = useState<string>("")
+    const [tlf, setTlf] = useState<string>("")
+    const [sexo, setSexo] = useState<string>("")
+    const [fechaNacimiento, setFechaNacimiento] = useState<Date>()
     const token = localStorage.getItem('token')
-    const [iduser, setIduser] = useState<any>()
     const [email, setEmail] = useState<string>("")
-    
+    const [confirmEmail, setconfirmEmail] = useState<boolean>(false)
     const [error, setError] = useState<boolean>(false)
     const [messageError, setMessageError] = useState<string>("")
     const [confirmCreate, setConfirmCreate] = useState<boolean>(false)
     const [messageConfirm, setMessageConfirm] = useState<string>("")
 
+      
     const {data} = useQuery<{ userslogs: any }>(user, {
-      variables: {
-        token: token
-      },
-      onCompleted: data => {
-        setIduser(data.userslogs.id)
-        setEmail(data.userslogs.email)
-      }
-    })
+        variables: {
+          token: token
+        },
+        onCompleted: ({userslogs}) => {
+            setEmail(userslogs.email)
+            setUsername(userslogs.username)
+            setconfirmEmail(true)    
+        },
+        onError: (e) => {
+          console.log(e)
+          props.history.push('/login')
+        },
+      })
+    
+
+      useEffect(() => {
+
+      }, [data])
+
+
     const [updateData, {loading}] = useMutation<{ UpdateUserData: any }>(update, {
       variables: {
-        id: iduser,
         email: email,
         firstName: firstname,
         lastName: lastname,
-        particularRut: particularRut,
-        particularTlf: particularTlf,
-        particularSexo: particularSexo,
+        rut: rut,
+        tlf: tlf,
+        sexo: sexo,
+        fechaNacimiento: fechaNacimiento,
       },
+      onCompleted: ({UpdateUserData}) => {
+        if(UpdateUserData.success){
+          setMessageConfirm("Register successful")
+          setConfirmCreate(true)
+        }
+        console.log(UpdateUserData)
+      },
+      onError: (e) => {
+        setMessageError("Error")
+          setError(true)
+          console.log(e)
+      }
     })
 
     const registerData = () => {
@@ -56,46 +82,34 @@ const RegisterData: React.FC = (props: any) => {
         setError(true)
         return
       }
-      if(particularRut === ""){
+      if(rut === ""){
         setMessageError("Please, Rut is required")
         setError(true)
         return
       }
-      if(particularTlf === ""){
+      if(tlf === ""){
         setMessageError("Please, Mobile is required")
         setError(true)
         return
       }
-      if(particularSexo === ""){
+      if(sexo === ""){
         setMessageError("Please, Gender is required")
         setError(true)
         return
       }
-      if(particularFechaNacimiento === undefined){
+      if(fechaNacimiento === undefined){
         setMessageError("Please, Birthdate is required")
         setError(true)
         return
       }
-
       updateData()
-      .then(
-        () => {
-          setMessageConfirm("Register successful")
-          setConfirmCreate(true)
-        }
-      )
-      .catch((e)=>{
-        setMessageError("Error")
-          setError(true)
-          console.log(e)
-      })
     }
 
     return (
         <IonPage>
             <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Hi, {data?.userslogs.username}</IonTitle>
+          <IonTitle>Hi, {username}</IonTitle>
           <IonButtons slot="secondary">
             <IonButton >
               <IonIcon slot="icon-only" icon={personCircle} />
@@ -134,9 +148,9 @@ const RegisterData: React.FC = (props: any) => {
           <IonRow>
             <IonCol>
               <InputPrimary
-              onChangeValue={(props: any)=> setParticularRut(props)}
+              onChangeValue={(props: any)=> setRut(props)}
               setIcon={cardOutline}
-              setValue={particularRut}
+              setValue={rut}
               setPlaceholder="RUT"
               setType="number"
               />
@@ -145,9 +159,9 @@ const RegisterData: React.FC = (props: any) => {
           <IonRow>
             <IonCol>
               <InputPrimary
-              onChangeValue={(props: any)=> setParticularTlf(props)}
+              onChangeValue={(props: any)=> setTlf(props)}
               setIcon={call}
-              setValue={particularTlf}
+              setValue={tlf}
               setPlaceholder="Mobile"
               />
             </IonCol>
@@ -155,9 +169,9 @@ const RegisterData: React.FC = (props: any) => {
           <IonRow>
             <IonCol>
             <InputPrimary
-              onChangeValue={(props: any)=> setParticularSexo(props)}
+              onChangeValue={(props: any)=> setSexo(props)}
               setIcon={personCircleOutline}
-              setValue={particularSexo}
+              setValue={sexo}
               setPlaceholder="Gender"
               select={true}
               options={[
@@ -172,13 +186,13 @@ const RegisterData: React.FC = (props: any) => {
             <IonCol>
               <IonItem color="login" lines="none" className="custom-date-item" >
                 <IonIcon
-                color={particularFechaNacimiento ? "success" : "light"}
+                color={fechaNacimiento ? "success" : "light"}
                 slot="start"
                 icon={calendarOutline}
                 className="custom-icon"
                 />
                 <IonDatetime 
-                onIonChange={(e: CustomEvent) => setParticularFechaNacimiento(e.detail.value)}
+                onIonChange={(e: CustomEvent) => setFechaNacimiento(e.detail.value)}
                 displayFormat="DD MM YYYY"
                 min="1980"
                 placeholder="Birthdate"
@@ -220,6 +234,7 @@ const RegisterData: React.FC = (props: any) => {
         />
                 </IonGrid>
             </IonContent>
+            <Toast active={confirmEmail} duration={2000} confirm={true} message="Email Confirm" />
         </IonPage>
     )
 }

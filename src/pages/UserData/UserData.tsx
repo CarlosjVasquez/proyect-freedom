@@ -34,11 +34,10 @@ const user = Query.query.userdata
 const UserData: React.FC = (props:any) => {
   const [firstname, setFirstname] = useState<string>("")
     const [lastname, setLastname] = useState<string>("")
-    const [particularRut, setParticularRut] = useState<string>("")
-    const [particularTlf, setParticularTlf] = useState<string>("")
-    const [particularSexo, setParticularSexo] = useState<string>("")
-    const [particularFechaNacimiento, setParticularFechaNacimiento] =     useState<string>()
-    const [username, setUsername] = useState<string>()
+    const [rut, setRut] = useState<string>("")
+    const [tlf, setTlf] = useState<string>("")
+    const [sexo, setSexo] = useState<string>("")
+    const [fechaNacimiento, setFechaNacimiento] = useState<string>()
     const [errorCreate, setErrorCreate] = useState<boolean>(false)
     const [messageError, setMessageError] = useState<string>("")
     const [confirmCreate, setConfirmCreate] = useState<boolean>(false)
@@ -47,20 +46,20 @@ const UserData: React.FC = (props:any) => {
     const [email, setEmail] = useState<string>("")
   const token = localStorage.getItem('token')
 
-  const {loading} = useQuery<{ userslogs: any }>(user, {
+  const {loading, data} = useQuery<{ userslogs: any }>(user, {
     variables: {
       token: token
     },
     onCompleted: data => {
       setFirstname(data.userslogs.firstName)
       setLastname(data.userslogs.lastName)
-      setParticularRut(data.userslogs.particularRut)
-      setParticularSexo(data.userslogs.particularSexo)
-      setParticularTlf(data.userslogs.particularTlf)
-      setParticularFechaNacimiento(data.userslogs.particularFechaNacimiento)
+      setRut(data.userslogs.rut)
+      setSexo(data.userslogs.sexo)
+      setTlf(data.userslogs.tlf)
+      setFechaNacimiento(data.userslogs.fechaNacimiento)
       setIduser(data.userslogs.id)
       setEmail(data.userslogs.email)
-      setUsername(data.userslogs.username)
+      console.log(data)
     }
   })
 
@@ -74,9 +73,10 @@ const UserData: React.FC = (props:any) => {
       email: email,
       firstName: firstname,
       lastName: lastname,
-      particularRut: particularRut,
-      particularTlf: particularTlf,
-      particularSexo: particularSexo,
+      rut: rut,
+      tlf: tlf,
+      sexo: sexo,
+      fechaNacimiento: fechaNacimiento,
     },
   })
 
@@ -86,22 +86,22 @@ const UserData: React.FC = (props:any) => {
       setErrorCreate(true)
       return
     }
-    if(particularRut === ""){
+    if(rut === ""){
       setMessageError("Please, Rut is required")
       setErrorCreate(true)
       return
     }
-    if(particularTlf === ""){
+    if(tlf === ""){
       setMessageError("Please, Mobile is required")
       setErrorCreate(true)
       return
     }
-    if(particularSexo === ""){
+    if(sexo === ""){
       setMessageError("Please, Gender is required")
       setErrorCreate(true)
       return
     }
-    if(particularFechaNacimiento === undefined){
+    if(fechaNacimiento === undefined){
       setMessageError("Please, Birthdate is required")
       setErrorCreate(true)
       return
@@ -112,7 +112,6 @@ const UserData: React.FC = (props:any) => {
       () => {
         setMessageConfirm("Register successful")
         setConfirmCreate(true)
-        console.log(particularFechaNacimiento)
       }
     )
     .catch((e)=>{
@@ -131,7 +130,7 @@ const UserData: React.FC = (props:any) => {
             <BtnBack onBack={onBackHandle} /> 
             </IonButton>
           </IonButtons>
-          <IonTitle className="title-user">{username}</IonTitle>
+          <IonTitle className="title-user">{data?.userslogs.username}</IonTitle>
           <IonButtons slot="secondary">
             <IonButton >
               <IonIcon slot="icon-only" icon={personCircle} />
@@ -169,9 +168,9 @@ const UserData: React.FC = (props:any) => {
           <IonRow>
             <IonCol>
               <InputPrimary
-              onChangeValue={(props: any)=> setParticularRut(props)}
+              onChangeValue={(props: any)=> setRut(props)}
               setIcon={cardOutline}
-              setValue={particularRut}
+              setValue={rut}
               setPlaceholder="RUT"
               setType="number"
               />
@@ -180,9 +179,9 @@ const UserData: React.FC = (props:any) => {
           <IonRow>
             <IonCol>
               <InputPrimary
-              onChangeValue={(props: any)=> setParticularTlf(props)}
+              onChangeValue={(props: any)=> setTlf(props)}
               setIcon={call}
-              setValue={particularTlf}
+              setValue={tlf}
               setPlaceholder="Mobile"
               />
             </IonCol>
@@ -190,9 +189,9 @@ const UserData: React.FC = (props:any) => {
           <IonRow>
             <IonCol>
               <InputPrimary
-              onChangeValue={(props: any)=> setParticularSexo(props)}
+              onChangeValue={(props: any)=> setSexo(props)}
               setIcon={personCircleOutline}
-              setValue={particularSexo}
+              setValue={sexo}
               setPlaceholder="Gender"
               select={true}
               options={[
@@ -207,18 +206,18 @@ const UserData: React.FC = (props:any) => {
             <IonCol>
               <IonItem color="login" lines="none" className="custom-date-item" >
                 <IonIcon
-                color={particularFechaNacimiento ? "success" : "light"}
+                color={fechaNacimiento ? "success" : "light"}
                 slot="start"
                 icon={calendarOutline}
                 className="custom-icon"
                 />
                 <IonDatetime 
-                onIonChange={(e: CustomEvent) => setParticularFechaNacimiento(e.detail.value)}
+                onIonChange={(e: CustomEvent) => setFechaNacimiento(e.detail.value)}
                 displayFormat="DD MM YYYY"
                 min="1980"
                 placeholder="Birthdate"
                 className="custom-date"
-                value={particularFechaNacimiento}
+                value={fechaNacimiento}
                 />
               </IonItem>
             </IonCol>

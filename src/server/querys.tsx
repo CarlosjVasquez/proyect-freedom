@@ -8,12 +8,15 @@ export const Query = {
             username
             email
             activar
+            pk
+            id
           }
         }
       `,
     userdata:gql`
       query($token: String!){
         userslogs(token:$token){
+          id,
           email,
           username,
           firstName,
@@ -24,7 +27,27 @@ export const Query = {
           fechaNacimiento,
         }
       }
-    `
+    `,
+    allfiles:gql`
+    query(
+      $nombre: String!,
+      $id: ID!,
+    ){
+      allUploads(
+        nombre_Icontains: $nombre,
+        idUser: $id,
+      ){
+        edges{
+          node{
+            id
+            nombre
+            archivo
+            created
+          }
+        }
+      }
+    }
+  `
   },
   mutation: {
     login: gql`
@@ -53,8 +76,12 @@ export const Query = {
           tlf: "",
           sexo: "",
           fechaNacimiento: "",
+          idDireccion: "0",
+          idTipoUser: "2",
         ){
           success
+          token
+          refreshToken
           errors
         }
       }
@@ -82,20 +109,66 @@ export const Query = {
         $fechaNacimiento: String!,
       ){
         UpdateUserData(
-          input:{
-            email: $email,
-            firstName: $firstName,
-            lastName: $lastName,
-            rut: $rut,
-            tlf: $tlf,
-            sexo: $sexo,
-            fechaNacimiento: $fechaNacimiento,
-          }
+          email: $email,
+          firstName: $firstName,
+          lastName: $lastName,
+          rut: $rut,
+          tlf: $tlf,
+          sexo: $sexo,
+          fechaNacimiento: $fechaNacimiento,
+          idDireccion: "0",
+          idTipoUser: "2",
+          activar:"true",
         ){
           success
           errors
         }
       }
-    `
+    `,
+    upload:gql`
+      mutation(
+        $nombre: String!,
+        $idUserId: Int!,
+        $thefile: String!,
+        $created: String!,
+      ){
+        myUpload(
+          nombre: $nombre,
+          idUserId: $idUserId,
+          thefile: $thefile,
+          created: $created,
+        ){
+          success
+        }
+      }
+    `,
+    sendPasswordReset:gql`
+      mutation(
+        $email: String!
+      ){
+        sendPasswordResetEmail(
+          email:$email
+        ){
+          success
+          errors
+        }
+      }
+    `,
+    PasswordReset:gql`
+    mutation(
+      $token: String!,
+      $newPassword1: String!
+      $newPassword2: String!
+    ){
+      passwordReset(
+        token: $token,
+        newPassword1: $newPassword1,
+        newPassword2: $newPassword2,
+      ){
+        success
+        errors
+      }
+    }
+  `,
   },
 }
