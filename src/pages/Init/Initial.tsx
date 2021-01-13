@@ -1,6 +1,13 @@
 import React from "react"
 
-import { IonRow, IonCol, IonTitle, IonPage, IonToolbar, IonFooter } from "@ionic/react"
+import {
+  IonRow,
+  IonCol,
+  IonTitle,
+  IonPage,
+  IonToolbar,
+  IonFooter,
+} from "@ionic/react"
 
 import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
 import HeaderLogo from "../../components/HeaderLogo/HeaderLogo"
@@ -28,7 +35,7 @@ const Init: React.FC = (props: any) => {
           </IonCol>
         </IonRow>
       </LayoutFirst>
-      <IonFooter >
+      <IonFooter>
         <IonToolbar className="ion-no-border" color="transparent">
           <IonTitle className="title-footer">Libertad 2 v1.0</IonTitle>
         </IonToolbar>

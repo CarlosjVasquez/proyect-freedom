@@ -30,12 +30,12 @@ const InputPassword: React.FC<{
           props.validate === undefined
             ? props.setValue
               ? "success"
-              : "light"
+              : ""
             : props.setValue
             ? props.validate
               ? "success"
               : "warning"
-            : "light"
+            : ""
         }
         slot="start"
         icon={lockClosedOutline}
@@ -49,7 +49,7 @@ const InputPassword: React.FC<{
       ></IonInput>
       <IonButtons>
         <IonButton
-          color="light"
+          color=""
           fill="clear"
           className="btn-eye"
           slot="start"

@@ -4,7 +4,7 @@ import { IonCol, IonRow, IonToast, IonLoading, IonPage } from "@ionic/react"
 
 import { personCircleOutline, alertCircle } from "ionicons/icons"
 
-import { useMutation } from "@apollo/client"
+import { useLazyQuery } from "@apollo/client"
 
 import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
@@ -12,18 +12,16 @@ import BtnBack from "../../components/BtnBack/BtnBack"
 import BtnSecondary from "../../components/BtnSecondary/BtnSecondary"
 import InputPassword from "../../components/InputPassword/InputPassword"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
-import {Query} from "../../server/querys"
-import Footer from '../../components/Footer/Footer'
-import Title from '../../components/Title/Title'
-
+import { Query } from "../../server/querys"
+import Footer from "../../components/Footer/Footer"
+import Title from "../../components/Title/Title"
 
 interface Token {
   token: string | undefined
   refreshToken: string | undefined
 }
 
-const login = Query.mutation.login;
-
+const login = Query.query.login
 
 const FormLogin: React.FC = (props: any) => {
   const [userName, setUsername] = useState<string>("")
@@ -31,24 +29,38 @@ const FormLogin: React.FC = (props: any) => {
   const [error, setError] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
 
-  const [tokenAuth, {loading}] = useMutation<{ tokenAuth: Token }>(login, {
+  const [tokenAuth, { loading }] = useLazyQuery<{ tokenAuth: Token }>(login, {
     variables: {
       username: userName,
       password: password,
     },
-  })
+    onCompleted: ({ tokenAuth }) => {
+      if (!!tokenAuth) {
+        localStorage.setItem("token", tokenAuth.token!)
+        localStorage.setItem("refreshToken", tokenAuth.refreshToken!)
 
+        setPassword("")
+        setUsername("")
+        props.history.push("/home")
+      }
+    },
+    onError: (e) => {
+      setMessageError("Please, enter valid credentials")
+      setError(true)
+      console.log(e)
+    },
+  })
 
   const onBackHandle = () => {
     props.history.push("/init")
   }
 
   const forgotPassword = () => {
-    props.history.push('/resetpasswordemail')
+    props.history.push("/resetpasswordemail")
   }
 
   const onRegister = () => {
-    props.history.push('/register')
+    props.history.push("/register")
   }
 
   const loginUser = () => {
@@ -63,24 +75,11 @@ const FormLogin: React.FC = (props: any) => {
       return
     }
     tokenAuth()
-      .then((user) => {
-        localStorage.setItem("token", user.data?.tokenAuth.token!)
-        localStorage.setItem("refreshToken", user.data?.tokenAuth.refreshToken!)
-        
-        setPassword("")
-        setUsername("")
-        props.history.push("/home")
-      })
-      .catch((e) => {
-        setMessageError("Please, enter valid credentials")
-        setError(true)
-        console.log(e)
-      })
   }
 
   return (
     <IonPage>
-      <BtnBack onBack={onBackHandle} />  
+      <BtnBack onBack={onBackHandle} />
       <LayoutFirst>
         <IonLoading
           cssClass="loading-custom"
@@ -111,12 +110,15 @@ const FormLogin: React.FC = (props: any) => {
             </IonRow>
             <IonRow>
               <IonCol>
-                <BtnPrimary name="Login" onClickHandle={loginUser} />
+                <BtnPrimary name="Login" onClickHandle={() => loginUser()} />
               </IonCol>
             </IonRow>
             <IonRow>
               <IonCol>
-                <BtnSecondary name="forgot password?" onClickHandle={ ()=> forgotPassword()} />
+                <BtnSecondary
+                  name="forgot password?"
+                  onClickHandle={() => forgotPassword()}
+                />
               </IonCol>
             </IonRow>
           </IonCol>
@@ -135,7 +137,7 @@ const FormLogin: React.FC = (props: any) => {
           />
         </IonRow>
       </LayoutFirst>
-      <Footer title="Dont have account?" btn="Register" link={onRegister}  />
+      <Footer title="Dont have account?" btn="Register" link={onRegister} />
     </IonPage>
   )
 }

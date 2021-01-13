@@ -3,8 +3,6 @@ import { Redirect, Route } from "react-router-dom"
 import { IonApp, IonRouterOutlet } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 
-
-
 import Home from "./pages/Home/Home"
 import Login from "./pages/Login/FormLogin"
 import Init from "./pages/Init/Initial"
@@ -12,7 +10,6 @@ import Register from "./pages/Register/Register"
 import UserData from "./pages/UserData/UserData"
 import Registerdata from "./pages/RegisterData/RegisterData"
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail'
-import ListFile from './pages/Files/ListFiles'
 import ResetPasswordEmail from './pages/ResetPassword/ResetPasswordEmail'
 import ResetPassword from './pages/ResetPassword/ResetPassword'
 
@@ -46,7 +43,6 @@ const App: React.FC = () => {
           <IonRouterOutlet>
             <Route path="/resetpassword/:id" component={ResetPassword} />
             <Route path="/resetpasswordemail" component={ResetPasswordEmail} />
-            <Route path="/listfiles" component={ListFile} />
             <Route path="/confirmemail/:id" component={ConfirmEmail} />
             <Route path="/registerdata" component={Registerdata} />
             <Route path="/register" component={Register} />

@@ -25,10 +25,10 @@ const InputPrimary: React.FC<{
               ? props.validate
                 ? "success"
                 : "warning"
-              : "light"
+              : ""
             : props.setValue
             ? "success"
-            : "light"
+            : ""
         }
         slot="start"
         icon={props.setIcon}
