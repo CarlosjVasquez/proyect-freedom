@@ -109,8 +109,6 @@ export const Query = {
           tlf: $tlf
           sexo: $sexo
           fechaNacimiento: $fechaNacimiento
-          idDireccion: "0"
-          idTipoUser: "2"
           activar: "true"
         ) {
           success
