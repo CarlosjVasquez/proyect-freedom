@@ -75,8 +75,6 @@ export const Query = {
           tlf: ""
           sexo: ""
           fechaNacimiento: ""
-          idDireccion: "0"
-          idTipoUser: "2"
         ) {
           success
           token
