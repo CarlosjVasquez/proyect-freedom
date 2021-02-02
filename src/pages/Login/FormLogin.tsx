@@ -1,10 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./LoginStyles.scss"
 import { IonCol, IonRow, IonToast, IonLoading, IonPage } from "@ionic/react"
 
 import { personCircleOutline, alertCircle } from "ionicons/icons"
 
-import { useLazyQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 
 import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
@@ -29,27 +29,53 @@ const FormLogin: React.FC = (props: any) => {
   const [error, setError] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
 
-  const [tokenAuth, { loading }] = useLazyQuery<{ tokenAuth: Token }>(login, {
+  const [skipQuery, setSkipQuery] = useState(true);
+
+  const { loading, data: fileData, error: errorData } = useQuery<{ tokenAuth: Token }>(
+    login, {
     variables: {
       username: userName,
       password: password,
     },
-    onCompleted: ({ tokenAuth }) => {
-      if (!!tokenAuth) {
-        localStorage.setItem("token", tokenAuth.token!)
-        localStorage.setItem("refreshToken", tokenAuth.refreshToken!)
-
-        setPassword("")
-        setUsername("")
-        props.history.push("/home")
-      }
-    },
-    onError: (e) => {
-      setMessageError("Please, enter valid credentials")
-      setError(true)
-      console.log(e)
-    },
+    skip: skipQuery,
+    fetchPolicy: "network-only",
   })
+
+  useEffect(() => {
+    if (!skipQuery) {
+      const onCompleted = ({tokenAuth}: any) => {
+        if (!!tokenAuth) {
+          localStorage.setItem("token", tokenAuth.token!)
+          localStorage.setItem("refreshToken", tokenAuth.refreshToken!)
+  
+          setPassword("")
+          setUsername("")
+          props.history.push("/home")
+        }
+      };
+
+      const onError = (e: any) => {
+        setMessageError("Please, enter valid credentials")
+          setError(true)
+          console.log(e)
+      };
+
+      if (onError || onCompleted) {
+        if (onCompleted && !loading && !errorData) {
+          //SuccessFunctionHere
+          setSkipQuery(true);
+          onCompleted(fileData)
+        } else if (onError && !loading && errorData) {
+          //ErrorFunctionHere
+          setSkipQuery(true);
+          console.log("error login");
+          onError(errorData);
+        }
+
+      }
+    }
+  }, [loading, fileData, errorData, skipQuery, props.history]);
+
 
   const onBackHandle = () => {
     props.history.push("/init")
@@ -74,7 +100,7 @@ const FormLogin: React.FC = (props: any) => {
       setError(true)
       return
     }
-    tokenAuth()
+    setSkipQuery(false)
   }
 
   return (

@@ -16,7 +16,7 @@ import {
   IonThumbnail,
   IonLabel,
 } from "@ionic/react"
-import { useQuery, useMutation, useLazyQuery } from "@apollo/client"
+import { useQuery, useMutation } from "@apollo/client"
 
 import { personCircle, settings, trash } from "ionicons/icons"
 import "./HomeStyles.scss"
@@ -25,8 +25,8 @@ import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 
 const up = Query.mutation.upload
 const user = Query.query.user
-const listFiles = Query.query.allfiles
-const fileDelete = Query.mutation.DeleteFile
+const {allfiles: FILES} = Query.query
+const { delete: FDELETE } = Query.mutation;
 
 const Home: React.FC = (props: any) => {
   const [thefile, setThefile] = useState<string>("")
@@ -36,7 +36,6 @@ const Home: React.FC = (props: any) => {
   const [filesList, setFilesList] = useState<any>()
   const [name, setName] = useState<string>("")
   const [idUser, setIdUser] = useState<string>("")
-  const [idDelete, setIdDelete] = useState<number>()
 
   const token = localStorage.getItem("token")
 
@@ -50,7 +49,7 @@ const Home: React.FC = (props: any) => {
       }
       setId(userslogs.pk)
       setIdUser(userslogs.id)
-      files()
+      setSkipQuery(false)
     },
     onError: (e) => {
       console.log(e)
@@ -58,18 +57,45 @@ const Home: React.FC = (props: any) => {
     },
   })
 
-  const [files] = useLazyQuery<{ allUploads: any }>(listFiles, {
-    variables: {
-      nombre: name,
-      id: idUser,
-    },
-    onCompleted: ({ allUploads }) => {
-      setFilesList(allUploads.edges)
-    },
-    onError: (e) => {
-      console.log(e)
-    },
-  })
+  const [skipQuery, setSkipQuery] = useState(true);
+
+  const { loading: loadFile, data: fileData, error: errorData } = useQuery(
+    FILES,
+    {
+      variables: {
+        id: idUser,
+        name: "",
+      },
+      skip: skipQuery,
+      fetchPolicy: "network-only",
+    }
+  );
+
+  useEffect(() => {
+    if (!skipQuery) {
+      const onCompleted = ({allUploads}: any) => {
+        setFilesList(allUploads.edges)
+      };
+
+      const onError = (e: any) => {
+        console.log(e);
+      };
+
+      if (onError || onCompleted) {
+        if (onCompleted && !loadFile && !errorData) {
+          //SuccessFunctionHere
+          setSkipQuery(true);
+          onCompleted(fileData)
+        } else if (onError && !loadFile && errorData) {
+          //ErrorFunctionHere
+          setSkipQuery(true);
+          console.log("error login");
+          onError(errorData);
+        }
+      }
+    }
+  }, [loadFile, fileData, errorData, skipQuery]);
+
 
   const [uplo] = useMutation<{ myUpload: any }>(up, {
     variables: {
@@ -79,35 +105,32 @@ const Home: React.FC = (props: any) => {
       created: create,
     },
     onCompleted: (e) => {
-      console.log(e)
-      props.history.go(0)
+      setSkipQuery(false);
     },
     onError: (e) => {
       console.log(e)
     },
   })
 
-  const [deleteFile] = useMutation<{ deleteUser: any }>(fileDelete, {
+  const [idFile, setIdFile] = useState("");
+
+  const [fileDelete] = useMutation(FDELETE, {
     variables: {
-      id: idDelete,
+      id: idFile,
     },
-    onCompleted: ({ deleteUser }) => {
-      console.log(deleteUser)
-      props.history.go(0)
+    onCompleted: () => {
+      setSkipQuery(false);
     },
     onError: (e) => {
-      console.log(e)
+      console.log(e);
     },
-  })
-
-  const deleteHandle = (e: any) => {
-    setIdDelete(e)
-    console.log(e)
-  }
+  });
 
   useEffect(() => {
-    deleteFile()
-  }, [idDelete, deleteFile])
+    if (idFile !== "") {
+      fileDelete();
+    }
+  }, [idFile, fileDelete]);
 
   const widget = (window as any).cloudinary.createUploadWidget(
     {
@@ -120,7 +143,7 @@ const Home: React.FC = (props: any) => {
   const checkUploadResult = (resultEvent: any) => {
     if (resultEvent.event === "success") {
       console.log(resultEvent)
-      setThefile(resultEvent.info.url)
+      setThefile(resultEvent.info.secure_url)
       setNombre(resultEvent.info.original_filename)
       setCreate(resultEvent.info.created_at)
       uplo()
@@ -181,7 +204,7 @@ const Home: React.FC = (props: any) => {
                         className="btn-eye"
                         slot="start"
                         shape="round"
-                        onClick={() => deleteHandle(file.node.pk)}
+                        onClick={() => setIdFile(file.node.pk)}
                       >
                         <IonIcon
                           slot="icon-only"

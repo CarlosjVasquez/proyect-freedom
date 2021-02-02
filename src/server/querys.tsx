@@ -29,8 +29,8 @@ export const Query = {
       }
     `,
     allfiles: gql`
-      query($nombre: String!, $id: ID!) {
-        allUploads(nombre_Icontains: $nombre, idUser: $id) {
+      query($name: String!, $id: ID!) {
+        allUploads(nombre_Icontains: $name, idUser: $id) {
           edges {
             node {
               id
@@ -157,17 +157,10 @@ export const Query = {
         }
       }
     `,
-    DeleteFile: gql`
+    delete: gql`
       mutation($id: ID!) {
         deleteUser(id: $id) {
           ok
-          uploadFile {
-            idUser {
-              id
-            }
-            archivo
-            nombre
-          }
         }
       }
     `,
