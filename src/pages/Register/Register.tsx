@@ -307,7 +307,7 @@ const Register: React.FC = (props: any) => {
         <Toast active={errorNumbers} message="This password must contain numbers" />
         <Toast active={errorMinMax} message="This password It must contain between 8 and 16 characters" />
         <Toast active={errorUserNameSimilarity} message="It should not be similar to the username." />
-        <Toast active={confirmCreate} confirm={true} message="Register successful, Please confirm your email to continue with the experience" />
+        <Toast active={confirmCreate} duration={6000} confirm={true} message="Register successful, Please confirm your email to continue with the experience" />
         {/* <IonToast
           cssClass="message-custom-confirm"
           isOpen={confirmCreate}
