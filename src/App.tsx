@@ -3,7 +3,6 @@ import { Redirect, Route } from "react-router-dom"
 import { IonApp, IonRouterOutlet } from "@ionic/react"
 import { IonReactRouter } from "@ionic/react-router"
 
-import AppUrlListener from "./pages/AppUrlListener"
 import Home from "./pages/Home/Home"
 import Login from "./pages/Login/FormLogin"
 import Init from "./pages/Init/Initial"
@@ -41,7 +40,6 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <IonApp>
         <IonReactRouter>
-          <AppUrlListener/>
           <IonRouterOutlet>
             <Route path="/resetpassword/:id" component={ResetPassword} />
             <Route path="/resetpasswordemail" component={ResetPasswordEmail} />
