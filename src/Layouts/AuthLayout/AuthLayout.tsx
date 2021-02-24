@@ -1,6 +1,6 @@
 import React from "react"
 import { IonContent, IonGrid, IonPage } from "@ionic/react"
-import styled from 'styled-components'
+import styled from "styled-components"
 import BackgroundVideo from "../../components/Auth/BackgroundVideo/BackgroundVideo"
 
 const AuthLayout: React.FC<{
@@ -29,7 +29,7 @@ const GridStyle = styled(IonGrid)`
   width: 100%;
   height: 100%;
   padding: 2.5rem 0 1.5rem 0;
-  &::after {
+  &::before {
     content: "";
     position: absolute;
     top: 0;
@@ -42,7 +42,6 @@ const GridStyle = styled(IonGrid)`
       rgba(223, 56, 56, 0.2) 0%,
       rgba(23, 36, 44, 0.7) 60%
     );
-    z-index: -1;
   }
 `
 

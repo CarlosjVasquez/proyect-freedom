@@ -1,15 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react"
+import styled from "styled-components"
 
-const BackgroundVideo: React.FC<{url: string}> = ({url}) => {
-    return(
-        <VideoStyle
-            src={url}
-            autoPlay
-            loop
-            muted
-          />
-    )
+const BackgroundVideo: React.FC<{ url: string }> = ({ url }) => {
+  return <VideoStyle src={url} autoPlay loop muted />
 }
 
 const VideoStyle = styled.video`
@@ -23,7 +16,7 @@ const VideoStyle = styled.video`
   height: auto;
   z-index: 0;
   background-size: cover;
-  z-index: -2;
+  z-index: -1;
 `
 
 export default BackgroundVideo
