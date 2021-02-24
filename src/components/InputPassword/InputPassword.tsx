@@ -1,7 +1,19 @@
 import React, { useState } from "react"
-import { IonItem, IonInput, IonButton, IonIcon, IonButtons, IonToast } from "@ionic/react"
-import { eyeOutline, eyeOffOutline, lockClosedOutline, information } from "ionicons/icons"
-import './InputPasswordStyles.scss'
+import {
+  IonItem,
+  IonInput,
+  IonButton,
+  IonIcon,
+  IonButtons,
+  IonToast,
+} from "@ionic/react"
+import {
+  eyeOutline,
+  eyeOffOutline,
+  lockClosedOutline,
+  information,
+} from "ionicons/icons"
+import "./InputPasswordStyles.scss"
 
 const InputPassword: React.FC<{
   setValue?: string
@@ -39,7 +51,6 @@ const InputPassword: React.FC<{
         }
         slot="start"
         icon={lockClosedOutline}
-        className="custom-icon"
       />
       <IonInput
         className="custom-input"
@@ -61,37 +72,32 @@ const InputPassword: React.FC<{
             icon={viewValue ? eyeOutline : eyeOffOutline}
           />
         </IonButton>
-        {
-            !!props.infoMessage && (
-        <IonButton
-          color="warning"
-          fill="clear"
-          className="btn-eye"
-          slot="end"
-          shape="round"
-          onClick={() => setMessage(true)}
-        >
-          <IonIcon
-            slot="icon-only"
-            icon={information}
-          />
-        </IonButton>
-        )
-      }
+        {!!props.infoMessage && (
+          <IonButton
+            color="warning"
+            fill="clear"
+            className="btn-eye"
+            slot="end"
+            shape="round"
+            onClick={() => setMessage(true)}
+          >
+            <IonIcon slot="icon-only" icon={information} />
+          </IonButton>
+        )}
       </IonButtons>
       <IonToast
         cssClass="message-custom-info"
-          isOpen={message} 
-          message={props?.infoMessage}
-          onDidDismiss={() => setMessage(false)}
-          duration={5000}
-          buttons={[
-            {
-              side: "end",
-              icon: information,
-            },
-          ]}
-        />
+        isOpen={message}
+        message={props?.infoMessage}
+        onDidDismiss={() => setMessage(false)}
+        duration={5000}
+        buttons={[
+          {
+            side: "end",
+            icon: information,
+          },
+        ]}
+      />
     </IonItem>
   )
 }

@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react"
-import "./LoginStyles.scss"
-import { IonCol, IonRow, IonToast, IonLoading, IonPage } from "@ionic/react"
+import { IonCol, IonRow } from "@ionic/react"
 
-import { personCircleOutline, alertCircle } from "ionicons/icons"
+import { personCircleOutline, lockClosedOutline } from "ionicons/icons"
 
 import { useQuery } from "@apollo/client"
+import { Query } from "../../server/querys"
 
-import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
+import AuthLayout from "../../Layouts/AuthLayout/AuthLayout"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 import BtnBack from "../../components/BtnBack/BtnBack"
 import BtnSecondary from "../../components/BtnSecondary/BtnSecondary"
-import InputPassword from "../../components/InputPassword/InputPassword"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
-import { Query } from "../../server/querys"
-import Footer from "../../components/Footer/Footer"
+import Footer from "../../components/Auth/Footer/Footer"
 import Title from "../../components/Title/Title"
+import Loading from "../../components/Loading/Loading"
+import Toast from "../../components/Toast/Toast"
+import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
 
 interface Token {
   token: string | undefined
@@ -29,10 +30,11 @@ const FormLogin: React.FC = (props: any) => {
   const [error, setError] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
 
-  const [skipQuery, setSkipQuery] = useState(true);
+  const [skipQuery, setSkipQuery] = useState(true)
 
-  const { loading, data: fileData, error: errorData } = useQuery<{ tokenAuth: Token }>(
-    login, {
+  const { loading, data: fileData, error: errorData } = useQuery<{
+    tokenAuth: Token
+  }>(login, {
     variables: {
       username: userName,
       password: password,
@@ -43,39 +45,37 @@ const FormLogin: React.FC = (props: any) => {
 
   useEffect(() => {
     if (!skipQuery) {
-      const onCompleted = ({tokenAuth}: any) => {
+      const onCompleted = ({ tokenAuth }: any) => {
         if (!!tokenAuth) {
           localStorage.setItem("token", tokenAuth.token!)
           localStorage.setItem("refreshToken", tokenAuth.refreshToken!)
-  
+
           setPassword("")
           setUsername("")
           props.history.push("/home")
         }
-      };
+      }
 
       const onError = (e: any) => {
         setMessageError("Please, enter valid credentials")
-          setError(true)
-          console.log(e)
-      };
+        setError(true)
+        console.log(e)
+      }
 
       if (onError || onCompleted) {
         if (onCompleted && !loading && !errorData) {
           //SuccessFunctionHere
-          setSkipQuery(true);
+          setSkipQuery(true)
           onCompleted(fileData)
         } else if (onError && !loading && errorData) {
           //ErrorFunctionHere
-          setSkipQuery(true);
-          console.log("error login");
-          onError(errorData);
+          setSkipQuery(true)
+          console.log("error login")
+          onError(errorData)
         }
-
       }
     }
-  }, [loading, fileData, errorData, skipQuery, props.history]);
-
+  }, [loading, fileData, errorData, skipQuery, props.history])
 
   const onBackHandle = () => {
     props.history.push("/init")
@@ -104,16 +104,20 @@ const FormLogin: React.FC = (props: any) => {
   }
 
   return (
-    <IonPage>
-      <BtnBack onBack={onBackHandle} />
-      <LayoutFirst>
-        <IonLoading
-          cssClass="loading-custom"
-          isOpen={loading}
-          message="loading"
-        />
+    <>
+      <AuthLayout
+        back={<BtnBack onBack={onBackHandle} />}
+        footer={
+          <Footer
+            title="Dont have account?"
+            btn="Register"
+            onClickHandle={onRegister}
+          />
+        }
+      >
+        <Loading active={loading} />
         <Title title="Login" color="transparent" />
-        <IonRow>
+        <FirstRowStyled>
           <IonCol>
             <IonRow>
               <IonCol>
@@ -127,17 +131,17 @@ const FormLogin: React.FC = (props: any) => {
             </IonRow>
             <IonRow>
               <IonCol>
-                <InputPassword
+                <InputPrimary
                   setPlaceholder="Password"
                   setValue={password}
                   onChangeValue={(props: any) => setPassword(props)}
+                  setType="password"
+                  setIcon={lockClosedOutline}
                 />
               </IonCol>
             </IonRow>
             <IonRow>
-              <IonCol>
-                <BtnPrimary name="Login" onClickHandle={() => loginUser()} />
-              </IonCol>
+              <BtnPrimary name="Login" onClickHandle={() => loginUser()} />
             </IonRow>
             <IonRow>
               <IonCol>
@@ -148,23 +152,15 @@ const FormLogin: React.FC = (props: any) => {
               </IonCol>
             </IonRow>
           </IonCol>
-          <IonToast
-            cssClass="message-custom"
-            isOpen={error}
-            onDidDismiss={() => setError(false)}
-            message={messageError}
+          <Toast
             duration={1500}
-            buttons={[
-              {
-                side: "end",
-                icon: alertCircle,
-              },
-            ]}
+            active={error}
+            message={messageError}
+            onDidDismiss={() => setError(false)}
           />
-        </IonRow>
-      </LayoutFirst>
-      <Footer title="Dont have account?" btn="Register" link={onRegister} />
-    </IonPage>
+        </FirstRowStyled>
+      </AuthLayout>
+    </>
   )
 }
 

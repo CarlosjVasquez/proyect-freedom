@@ -9,13 +9,16 @@ import {
     checkmarkCircleOutline,
 } from "ionicons/icons"
 
+import './ToastStyles.scss'
+
 const Toast: React.FC<{
     active: boolean,
     message: string,
     confirm?: boolean | undefined,
     duration?: number | undefined,
     position?: "top" | "bottom" | "middle" | undefined,
-}> = ({active, message, duration, confirm, position})   => {
+    onDidDismiss?: () => void
+}> = ({active, message, duration, confirm, position, onDidDismiss})   => {
     return(
         <IonToast
             cssClass={confirm ? "message-custom-confirm" : "message-custom"}
@@ -23,6 +26,7 @@ const Toast: React.FC<{
             message={message}
             duration={duration}
             position={position}
+            onDidDismiss={onDidDismiss}
             buttons={[
                 {
                     side: "end",

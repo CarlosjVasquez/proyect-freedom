@@ -1,41 +1,33 @@
 import React, { useEffect, useState } from "react"
+import styled from "styled-components"
 import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonPage,
-  IonButtons,
   IonButton,
   IonIcon,
-  IonLoading,
-  IonRow,
   IonCol,
   IonList,
-  IonItem,
-  IonThumbnail,
-  IonLabel,
+  IonCard,
+  IonCardContent,
+  IonSpinner,
 } from "@ionic/react"
 import { useQuery, useMutation } from "@apollo/client"
 
-import { personCircle, settings, trash } from "ionicons/icons"
-import "./HomeStyles.scss"
-import { Query } from "../../server/querys"
-import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
+import { refresh } from "ionicons/icons"
 
-const up = Query.mutation.upload
+import { Query } from "../../server/querys"
+import BtnAddFile from "../../components/Admin/BtnAddFile/BtnAddFile"
+import File from "../../components/Admin/File/File"
+import AdminLayout from "../../Layouts/AdminLayout/AdminLayout"
+import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
+
 const user = Query.query.user
-const {allfiles: FILES} = Query.query
-const { delete: FDELETE } = Query.mutation;
+const { allfiles: FILES } = Query.query
+const { delete: FDELETE } = Query.mutation
 
 const Home: React.FC = (props: any) => {
-  const [thefile, setThefile] = useState<string>("")
   const [id, setId] = useState<number>()
-  const [nombre, setNombre] = useState<string>("")
-  const [create, setCreate] = useState<string>("")
   const [filesList, setFilesList] = useState<any>()
-  const [name, setName] = useState<string>("")
   const [idUser, setIdUser] = useState<string>("")
+  const [skipQuery, setSkipQuery] = useState(true)
 
   const token = localStorage.getItem("token")
 
@@ -57,8 +49,6 @@ const Home: React.FC = (props: any) => {
     },
   })
 
-  const [skipQuery, setSkipQuery] = useState(true);
-
   const { loading: loadFile, data: fileData, error: errorData } = useQuery(
     FILES,
     {
@@ -69,163 +59,125 @@ const Home: React.FC = (props: any) => {
       skip: skipQuery,
       fetchPolicy: "network-only",
     }
-  );
+  )
 
   useEffect(() => {
     if (!skipQuery) {
-      const onCompleted = ({allUploads}: any) => {
+      const onCompleted = ({ allUploads }: any) => {
         setFilesList(allUploads.edges)
-      };
+      }
 
       const onError = (e: any) => {
-        console.log(e);
-      };
+        console.log(e)
+      }
 
       if (onError || onCompleted) {
         if (onCompleted && !loadFile && !errorData) {
           //SuccessFunctionHere
-          setSkipQuery(true);
+          setSkipQuery(true)
           onCompleted(fileData)
         } else if (onError && !loadFile && errorData) {
           //ErrorFunctionHere
-          setSkipQuery(true);
-          console.log("error login");
-          onError(errorData);
+          setSkipQuery(true)
+          console.log("error login")
+          onError(errorData)
         }
       }
     }
-  }, [loadFile, fileData, errorData, skipQuery]);
+  }, [loadFile, fileData, errorData, skipQuery])
 
-
-  const [uplo] = useMutation<{ myUpload: any }>(up, {
-    variables: {
-      nombre: nombre,
-      idUserId: id,
-      thefile: thefile,
-      created: create,
-    },
-    onCompleted: (e) => {
-      setSkipQuery(false);
-    },
-    onError: (e) => {
-      console.log(e)
-    },
-  })
-
-  const [idFile, setIdFile] = useState("");
+  const [idFile, setIdFile] = useState("")
 
   const [fileDelete] = useMutation(FDELETE, {
     variables: {
       id: idFile,
     },
     onCompleted: () => {
-      setSkipQuery(false);
+      setSkipQuery(false)
     },
     onError: (e) => {
-      console.log(e);
+      console.log(e)
     },
-  });
+  })
 
   useEffect(() => {
     if (idFile !== "") {
-      fileDelete();
+      fileDelete()
     }
-  }, [idFile, fileDelete]);
+  }, [idFile, fileDelete])
 
-  const widget = (window as any).cloudinary.createUploadWidget(
-    {
-      cloudName: "dhdjnyxht",
-      uploadPreset: "iqspxphc",
-    },
-    (error: any, result: any) => checkUploadResult(result)
+  const menubuttons = (
+    <>
+      <IonButton onClick={() => setSkipQuery(false)}>
+        <IonIcon slot="icon-only" icon={refresh} />
+      </IonButton>
+      <BtnAddFile idUser={id} onSuccess={() => setSkipQuery(false)} />
+    </>
   )
-
-  const checkUploadResult = (resultEvent: any) => {
-    if (resultEvent.event === "success") {
-      console.log(resultEvent)
-      setThefile(resultEvent.info.secure_url)
-      setNombre(resultEvent.info.original_filename)
-      setCreate(resultEvent.info.created_at)
-      uplo()
-    }
-  }
-
-  const userData = () => {
-    props.history.push("/userdata")
-  }
-
-  const showWidget = () => {
-    widget.open()
-  }
 
   return (
-    <IonPage>
-      <IonLoading
-        cssClass="loading-custom"
-        isOpen={loading}
-        message="loading"
-      />
-      <IonHeader>
-        <IonToolbar color="primary">
-          <IonTitle>Hi, {data?.userslogs.username}</IonTitle>
-          <IonButtons slot="secondary">
-            <IonButton onClick={userData}>
-              <IonIcon slot="icon-only" icon={personCircle} />
-            </IonButton>
-            <IonButton>
-              <IonIcon slot="icon-only" icon={settings} />
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonRow>
+    <>
+      <AdminLayout
+        history={(e: any) => props.history.push(e)}
+        loading={loading}
+        username={data?.userslogs.username}
+        menuButtons={menubuttons}
+      >
+        <FirstRowStyled>
           <IonCol>
-            <IonList>
-              {filesList &&
+            <ListStyled>
+              {loadFile ? (
+                <CardSpinnerStyled>
+                  <IonSpinner />
+                </CardSpinnerStyled>
+              ) : filesList && filesList.length > 0 ? (
                 filesList.map((file: any, key: any) => (
-                  <IonItem key={key}>
-                    <IonThumbnail slot="start">
-                      <img
-                        src="https://res.cloudinary.com/dhdjnyxht/image/upload/v1610127483/1490200250-20_82287_lmdtlr.png"
-                        alt=""
-                      />
-                    </IonThumbnail>
-                    <IonLabel>
-                      <h2>{file.node.nombre}</h2>
-                      <h6>
-                        Created: {new Date(file.node.created).toLocaleString()}
-                      </h6>
-                    </IonLabel>
-                    <IonButtons slot="end">
-                      <IonButton
-                        color=""
-                        fill="clear"
-                        className="btn-eye"
-                        slot="start"
-                        shape="round"
-                        onClick={() => setIdFile(file.node.pk)}
-                      >
-                        <IonIcon
-                          slot="icon-only"
-                          icon={trash}
-                          color="#ff0000"
-                        />
-                      </IonButton>
-                    </IonButtons>
-                  </IonItem>
-                ))}
-            </IonList>
+                  <File
+                    key={key}
+                    file={file}
+                    onDelete={(e: any) => setIdFile(e)}
+                  />
+                ))
+              ) : (
+                <CardStyled>
+                  <IonCardContent>+ Add Files</IonCardContent>
+                  <BtnAddFile
+                    idUser={id}
+                    onSuccess={() => setSkipQuery(false)}
+                    color="primary"
+                  />
+                </CardStyled>
+              )}
+            </ListStyled>
           </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol>
-            <BtnPrimary name="File Upload" onClickHandle={() => showWidget()} />
-          </IonCol>
-        </IonRow>
-      </IonContent>
-    </IonPage>
+        </FirstRowStyled>
+      </AdminLayout>
+    </>
   )
 }
+
+const ListStyled = styled(IonList)`
+  background: transparent !important;
+`
+
+const CardStyled = styled(IonCard)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  margin: 0;
+`
+
+const CardSpinnerStyled = styled(IonCard)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  box-shadow: none !important;
+  background: transparent !important;
+  margin: 0;
+`
 
 export default Home

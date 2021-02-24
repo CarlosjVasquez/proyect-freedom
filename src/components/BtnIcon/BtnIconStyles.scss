@@ -1,0 +1,13 @@
+.btn-icon {
+    --background: #df3838;
+    --background: linear-gradient(
+      30deg,
+      rgb(231, 106, 106) 0%,
+      rgba(223, 56, 56, 1) 50%,
+      rgb(231, 106, 106) 100%
+    ) !important;
+    --border-radius: 9999px !important;
+    width: 50px !important;
+    height: 50px  !important;
+  }
+  

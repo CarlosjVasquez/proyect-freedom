@@ -10,6 +10,9 @@ export const Query = {
           activar
           pk
           id
+          saldoSet {
+            saldo
+          }
         }
       }
     `,
@@ -25,6 +28,7 @@ export const Query = {
           tlf
           sexo
           fechaNacimiento
+          pk
         }
       }
     `,
@@ -100,6 +104,7 @@ export const Query = {
         $tlf: String!
         $sexo: String!
         $fechaNacimiento: String!
+        $id: ID!
       ) {
         UpdateUserData(
           email: $email
@@ -113,6 +118,11 @@ export const Query = {
         ) {
           success
           errors
+        }
+        UserFilaSaldo(id: $id) {
+          userprofiles {
+            pk
+          }
         }
       }
     `,

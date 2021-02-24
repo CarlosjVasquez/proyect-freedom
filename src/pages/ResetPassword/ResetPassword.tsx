@@ -1,14 +1,15 @@
-import { IonCol, IonLoading, IonPage, IonRow } from '@ionic/react'
+import { IonCol, IonRow } from '@ionic/react'
 import React, { useEffect, useState } from 'react'
 import { Query } from '../../server/querys'
 import {useMutation} from '@apollo/client'
 import { RouteComponentProps } from 'react-router-dom';
 
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
-import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
+import AuthLayout from "../../Layouts/AuthLayout/AuthLayout"
 import InputPassword from "../../components/InputPassword/InputPassword"
 import Toast from '../../components/Toast/Toast'
 import Title from '../../components/Title/Title'
+import Loading from '../../components/Loading/Loading'
 
 const sendPasswordChange = Query.mutation.PasswordReset
 
@@ -129,13 +130,9 @@ const ResetPassword: React.FC<UserDetailPageProps> = ({match, history}) => {
 
 
     return(
-        <IonPage>
-            <IonLoading 
-                cssClass="loading-custom"
-                isOpen={loading}
-                message="loading"
-            />
-            <LayoutFirst>
+        <>
+            <AuthLayout>
+                <Loading active={loading} />
                 <Title title="Recover Password" color="transparent" />
                 <IonRow>
                     <IonCol>
@@ -174,8 +171,8 @@ const ResetPassword: React.FC<UserDetailPageProps> = ({match, history}) => {
                     <Toast active={errorMinMax} message="This password It must contain between 8 and 16 characters" />
                     <Toast active={errorConfirmPassword} message="Confirm Password" />
                 </IonRow>
-            </LayoutFirst>
-        </IonPage>
+            </AuthLayout>
+        </>
     )
 }
 

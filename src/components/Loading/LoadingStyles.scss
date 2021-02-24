@@ -1,0 +1,15 @@
+.loading-custom{
+    --background: transparent !important;
+  color: #fff;
+  .loading-wrapper {
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .loading-content {
+      margin: 15px 0 0 0 !important;
+      padding: 0;
+    }
+  }
+}

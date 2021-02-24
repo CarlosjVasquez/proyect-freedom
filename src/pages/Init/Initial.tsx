@@ -1,17 +1,12 @@
 import React from "react"
 
-import {
-  IonRow,
-  IonCol,
-  IonTitle,
-  IonPage,
-  IonToolbar,
-  IonFooter,
-} from "@ionic/react"
+import { IonCol } from "@ionic/react"
 
-import LayoutFirst from "../../components/LayoutFirst/LayoutFirst"
+import AuthLayout from "../../Layouts/AuthLayout/AuthLayout"
 import HeaderLogo from "../../components/HeaderLogo/HeaderLogo"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
+import Footer from "../../components/Auth/Footer/Footer"
+import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
 
 const Init: React.FC = (props: any) => {
   const registerHandle = () => {
@@ -20,11 +15,12 @@ const Init: React.FC = (props: any) => {
   const loginHandle = () => {
     props.history.push("/login")
   }
+
   return (
-    <IonPage>
-      <LayoutFirst>
+    <>
+      <AuthLayout footer={<Footer title="Libertad 2 v1.0 " />}>
         <HeaderLogo />
-        <IonRow>
+        <FirstRowStyled>
           <IonCol>
             <BtnPrimary name="Login" onClickHandle={loginHandle} />
             <BtnPrimary
@@ -33,14 +29,9 @@ const Init: React.FC = (props: any) => {
               onClickHandle={registerHandle}
             />
           </IonCol>
-        </IonRow>
-      </LayoutFirst>
-      <IonFooter>
-        <IonToolbar className="ion-no-border" color="transparent">
-          <IonTitle className="title-footer">Libertad 2 v1.0</IonTitle>
-        </IonToolbar>
-      </IonFooter>
-    </IonPage>
+        </FirstRowStyled>
+      </AuthLayout>
+    </>
   )
 }
 
