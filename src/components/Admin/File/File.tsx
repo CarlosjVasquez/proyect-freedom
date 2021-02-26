@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 
 import {
@@ -14,17 +14,40 @@ import {
   IonRow,
   IonCol,
 } from "@ionic/react"
-import { settings, trash } from "ionicons/icons"
+import { settings, trash, save } from "ionicons/icons"
 
 import documentopdf from "../../Icons/documentopdf.svg"
 import InputConfig from "../InputConfig/InputConfig"
 
-const File: React.FC<{ file: any; onDelete: any }> = ({ file, onDelete }) => {
+const File: React.FC<{ file: any; onDelete: any; onSavedConfig: any }> = ({
+  file,
+  onDelete,
+  onSavedConfig,
+}) => {
   const [active, setActive] = useState(false)
+  const [orientacion, setOrientacion] = useState()
+  const [printTypes, setPrintTypes] = useState()
+  const [pageByPlane, setPageByPlane] = useState()
+  const [copies, setCopies] = useState()
+  const [interval, setInterval] = useState()
+
+  useEffect(() => {
+    setOrientacion(file.node.orientacion)
+    setPrintTypes(file.node.printTypes)
+    setPageByPlane(file.node.pageByPlane)
+    setCopies(file.node.copies)
+    setInterval(file.node.interval)
+  }, [
+    file.node.orientacion,
+    file.node.printTypes,
+    file.node.pageByPlane,
+    file.node.copies,
+    file.node.interval,
+  ])
 
   return (
     <CardStyled>
-      <ItemStyled button onClick={() => setActive(!active)}>
+      <ItemStyled>
         <IonIcon
           color="primary"
           slot="start"
@@ -43,7 +66,18 @@ const File: React.FC<{ file: any; onDelete: any }> = ({ file, onDelete }) => {
             className="btn-eye"
             slot="start"
             shape="round"
+            onClick={() => setActive(!active)}
+            size="small"
+          >
+            <IonIcon slot="icon-only" icon={settings} color="primary" />
+          </IonButton>
+          <IonButton
+            fill="clear"
+            className="btn-eye"
+            slot="start"
+            shape="round"
             onClick={() => onDelete(file.node.pk)}
+            size="small"
           >
             <IonIcon slot="icon-only" icon={trash} color="secondary" />
           </IonButton>
@@ -67,6 +101,8 @@ const File: React.FC<{ file: any; onDelete: any }> = ({ file, onDelete }) => {
                 options={[{ name: "Vertical" }, { name: "Horizontal" }]}
                 title="Orientation"
                 type="select"
+                onChange={(e: any) => setOrientacion(e)}
+                value={orientacion}
               />
             </IonCol>
             <IonCol size="6">
@@ -75,6 +111,8 @@ const File: React.FC<{ file: any; onDelete: any }> = ({ file, onDelete }) => {
                 icon={documentopdf}
                 options={[{ name: "Simple" }, { name: "Duplex" }]}
                 title="Print Types"
+                value={printTypes}
+                onChange={(e: any) => setPrintTypes(e)}
               />
             </IonCol>
           </IonRow>
@@ -89,34 +127,61 @@ const File: React.FC<{ file: any; onDelete: any }> = ({ file, onDelete }) => {
                   { name: "Four page by plane" },
                 ]}
                 title="Page by Plane"
+                value={pageByPlane}
+                onChange={(e: any) => setPageByPlane(e)}
               />
             </IonCol>
             <IonCol size="6">
               <InputConfig
                 type="text"
                 icon={documentopdf}
-                options={[{ name: "Simple" }, { name: "Duplex" }]}
                 title="Copies"
                 placeholder="1"
+                value={copies}
+                onChange={(e: any) => setCopies(e)}
               />
             </IonCol>
           </IonRow>
           <IonRow>
-            <IonCol size="12">
+            <IonCol size="6">
               <InputConfig
                 type="text"
                 icon={documentopdf}
-                options={[{ name: "Vertical" }, { name: "Horizontal" }]}
                 title="Interval"
                 placeholder="# - #"
+                value={interval}
+                onChange={(e: any) => setInterval(e)}
               />
             </IonCol>
+            <ColRightStyled size="6">
+              <IonButton
+                color="secondary"
+                onClick={() =>
+                  onSavedConfig(
+                    file.node.pk,
+                    orientacion,
+                    printTypes,
+                    pageByPlane,
+                    copies,
+                    interval
+                  )
+                }
+              >
+                <IonIcon slot="end" icon={save} />
+                Saved
+              </IonButton>
+            </ColRightStyled>
           </IonRow>
         </ContCardCont>
       </CardContentStyled>
     </CardStyled>
   )
 }
+
+const ColRightStyled = styled(IonCol)`
+  display: flex;
+  justify-content: flex-end !important;
+`
 
 const ToolbarStyled = styled(IonToolbar)`
   --min-height: 30px !important;

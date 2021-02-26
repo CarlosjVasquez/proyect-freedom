@@ -42,6 +42,11 @@ export const Query = {
               archivo
               created
               pk
+              orientacion
+              printTypes
+              pageByPlane
+              copies
+              interval
             }
           }
         }
@@ -171,6 +176,28 @@ export const Query = {
       mutation($id: ID!) {
         deleteUser(id: $id) {
           ok
+        }
+      }
+    `,
+    updateConfig: gql`
+      mutation(
+        $id: ID!
+        $orientacion: String!
+        $printTypes: String!
+        $pageByPlane: String!
+        $copies: Int!
+        $interval: String!
+      ) {
+        UpdateImpresionConfig(
+          id: $id
+          orientacion: $orientacion
+          printTypes: $printTypes
+          pageByPlane: $pageByPlane
+          copies: $copies
+          interval: $interval
+        ) {
+          success
+          error
         }
       }
     `,

@@ -12,11 +12,13 @@ import {
 
 const InputConfig: React.FC<{
   icon: any
-  options: any
+  options?: any
   title: string
   type: "select" | "text"
   placeholder?: string
-}> = ({ icon, options, title, type, placeholder }) => {
+  value?: string
+  onChange: any
+}> = ({ icon, options, title, type, placeholder, value, onChange }) => {
   return (
     <IntemSelect>
       <IconSelect slot="start" icon={icon} size="small" color="secondary" />
@@ -26,13 +28,20 @@ const InputConfig: React.FC<{
           interfaceOptions={{
             header: title,
           }}
+          value={value}
+          onIonChange={(e: any) => onChange(e.detail.value)}
         >
           {options.map((item: any, key: any) => (
             <IonSelectOption key={key}>{item.name}</IonSelectOption>
           ))}
         </SelectStyled>
       ) : (
-        <InputStyled type="text" placeholder={placeholder} />
+        <InputStyled
+          onIonChange={(e: any) => onChange(e.detail.value)}
+          value={value}
+          type="text"
+          placeholder={placeholder}
+        />
       )}
     </IntemSelect>
   )

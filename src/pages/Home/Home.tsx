@@ -21,7 +21,7 @@ import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
 
 const user = Query.query.user
 const { allfiles: FILES } = Query.query
-const { delete: FDELETE } = Query.mutation
+const { delete: FDELETE, updateConfig: UPCONFIG } = Query.mutation
 
 const Home: React.FC = (props: any) => {
   const [id, setId] = useState<number>()
@@ -86,12 +86,7 @@ const Home: React.FC = (props: any) => {
     }
   }, [loadFile, fileData, errorData, skipQuery])
 
-  const [idFile, setIdFile] = useState("")
-
   const [fileDelete] = useMutation(FDELETE, {
-    variables: {
-      id: idFile,
-    },
     onCompleted: () => {
       setSkipQuery(false)
     },
@@ -100,11 +95,42 @@ const Home: React.FC = (props: any) => {
     },
   })
 
-  useEffect(() => {
-    if (idFile !== "") {
-      fileDelete()
-    }
-  }, [idFile, fileDelete])
+  const deleteHandle = (id: any) => {
+    fileDelete({
+      variables: {
+        id: id,
+      },
+    })
+  }
+
+  const [upConfig] = useMutation(UPCONFIG, {
+    onCompleted: () => {
+      setSkipQuery(false)
+    },
+    onError: (e) => {
+      console.log(e)
+    },
+  })
+
+  const saveConfig = (
+    id: any,
+    orientacion: any,
+    printTypes: any,
+    pageByPlane: any,
+    copies: any,
+    interval: any
+  ) => {
+    upConfig({
+      variables: {
+        id,
+        orientacion,
+        printTypes,
+        pageByPlane,
+        copies,
+        interval,
+      },
+    })
+  }
 
   const menubuttons = (
     <>
@@ -135,7 +161,24 @@ const Home: React.FC = (props: any) => {
                   <File
                     key={key}
                     file={file}
-                    onDelete={(e: any) => setIdFile(e)}
+                    onDelete={(e: any) => deleteHandle(e)}
+                    onSavedConfig={(
+                      id: any,
+                      orientacion: any,
+                      printTypes: any,
+                      pageByPlane: any,
+                      copies: any,
+                      interval: any
+                    ) =>
+                      saveConfig(
+                        id,
+                        orientacion,
+                        printTypes,
+                        pageByPlane,
+                        copies,
+                        interval
+                      )
+                    }
                   />
                 ))
               ) : (
