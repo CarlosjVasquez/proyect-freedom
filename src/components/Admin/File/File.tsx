@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
+import { Document, pdfjs } from "react-pdf"
 
 import {
   IonItem,
   IonLabel,
-  IonButtons,
   IonButton,
   IonIcon,
   IonCard,
@@ -13,23 +13,32 @@ import {
   IonToolbar,
   IonRow,
   IonCol,
+  IonNote,
 } from "@ionic/react"
 import { settings, trash, save } from "ionicons/icons"
 
 import documentopdf from "../../Icons/documentopdf.svg"
 import InputConfig from "../InputConfig/InputConfig"
 
-const File: React.FC<{ file: any; onDelete: any; onSavedConfig: any }> = ({
-  file,
-  onDelete,
-  onSavedConfig,
-}) => {
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
+
+const File: React.FC<{
+  file: any
+  onDelete: any
+  onSavedConfig: any
+  saldo: any
+}> = ({ file, onDelete, onSavedConfig, saldo }) => {
   const [active, setActive] = useState(false)
   const [orientacion, setOrientacion] = useState()
   const [printTypes, setPrintTypes] = useState()
   const [pageByPlane, setPageByPlane] = useState()
   const [copies, setCopies] = useState()
   const [interval, setInterval] = useState()
+  const [configState, setConfigState] = useState()
+  const [archivo, setArchivo] = useState()
+  const [price, setPrice] = useState(0)
+
+  const [numPages, setNumPages] = useState(null)
 
   useEffect(() => {
     setOrientacion(file.node.orientacion)
@@ -37,62 +46,66 @@ const File: React.FC<{ file: any; onDelete: any; onSavedConfig: any }> = ({
     setPageByPlane(file.node.pageByPlane)
     setCopies(file.node.copies)
     setInterval(file.node.interval)
+    setConfigState(file.node.configEstado)
+    setArchivo(file.node.archivo)
+    setPrice(file.node.price)
+    console.log(file)
   }, [
     file.node.orientacion,
     file.node.printTypes,
     file.node.pageByPlane,
     file.node.copies,
     file.node.interval,
+    file.node.configEstado,
+    file.node.price,
   ])
+
+  useEffect(() => {
+    if (configState) {
+    }
+  }, [configState])
+
+  const onDocumentLoadSuccess = (data: any) => {
+    setNumPages(data.numPages)
+  }
 
   return (
     <CardStyled>
-      <ItemStyled>
-        <IonIcon
-          color="primary"
-          slot="start"
-          size="large"
-          icon={documentopdf}
-        />
+      <ItemStyled button onClick={() => setActive(!active)}>
+        <IonIcon color="primary" slot="start" size="med" icon={documentopdf} />
         <IonLabel>
           <TitleStyled>{file.node.nombre}</TitleStyled>
           <CreateStyled>
             Created: {new Date(file.node.created).toLocaleString()}
           </CreateStyled>
         </IonLabel>
-        <IonButtons slot="end">
-          <IonButton
-            fill="clear"
-            className="btn-eye"
-            slot="start"
-            shape="round"
-            onClick={() => setActive(!active)}
-            size="small"
-          >
-            <IonIcon slot="icon-only" icon={settings} color="primary" />
-          </IonButton>
-          <IonButton
-            fill="clear"
-            className="btn-eye"
-            slot="start"
-            shape="round"
-            onClick={() => onDelete(file.node.pk)}
-            size="small"
-          >
-            <IonIcon slot="icon-only" icon={trash} color="secondary" />
-          </IonButton>
-        </IonButtons>
+        <NoteStyled slot="end" color={price < saldo ? "success" : "danger"}>
+          {!configState ? <>----</> : <>${price}</>}
+        </NoteStyled>
       </ItemStyled>
       <CardContentStyled active={active}>
         <ContCardCont>
           <ToolbarStyled>
-            <IonTitle size="small">Print Settings</IonTitle>
             <IonIcon
               slot="start"
               color="primary"
               icon={settings}
               size="small"
             />
+            <IonTitle size="small">Print Settings</IonTitle>
+            <IonButton
+              fill="clear"
+              slot="end"
+              shape="round"
+              onClick={() => onDelete(file.node.pk)}
+            >
+              <IonIcon
+                slot="icon-only"
+                size="small"
+                icon={trash}
+                color="danger"
+              />
+            </IonButton>
           </ToolbarStyled>
           <IonRow>
             <IonCol size="6">
@@ -163,7 +176,8 @@ const File: React.FC<{ file: any; onDelete: any; onSavedConfig: any }> = ({
                     printTypes,
                     pageByPlane,
                     copies,
-                    interval
+                    interval,
+                    numPages
                   )
                 }
               >
@@ -174,9 +188,15 @@ const File: React.FC<{ file: any; onDelete: any; onSavedConfig: any }> = ({
           </IonRow>
         </ContCardCont>
       </CardContentStyled>
+      <DocumentStyled file={archivo} onLoadSuccess={onDocumentLoadSuccess} />
     </CardStyled>
   )
 }
+
+const DocumentStyled = styled(Document)`
+  display: none !important;
+  opacity: 0 !important;
+`
 
 const ColRightStyled = styled(IonCol)`
   display: flex;
@@ -204,6 +224,12 @@ const CardContentStyled = styled(IonCardContent)<{ active: boolean }>`
   }
 `
 
+const NoteStyled = styled(IonNote)`
+  align-self: center !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+`
+
 const ItemStyled = styled(IonItem)`
   --inner-border-width: 0px;
   border-bottom: solid 1px #3b3b3b23;
@@ -211,9 +237,12 @@ const ItemStyled = styled(IonItem)`
 
 const TitleStyled = styled.h2`
   text-transform: capitalize;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  color: #2a4150;
 `
 const CreateStyled = styled.p`
-  font-size: 0.7rem !important;
+  font-size: 0.6rem !important;
 `
 
 const CardStyled = styled(IonCard)`

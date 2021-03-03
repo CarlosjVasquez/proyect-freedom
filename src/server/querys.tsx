@@ -47,6 +47,9 @@ export const Query = {
               pageByPlane
               copies
               interval
+              configEstado
+              nhojas
+              price
             }
           }
         }
@@ -187,6 +190,7 @@ export const Query = {
         $pageByPlane: String!
         $copies: Int!
         $interval: String!
+        $nhojas: Int!
       ) {
         UpdateImpresionConfig(
           id: $id
@@ -195,6 +199,8 @@ export const Query = {
           pageByPlane: $pageByPlane
           copies: $copies
           interval: $interval
+          nhojas: $nhojas
+          configEstado: true
         ) {
           success
           error

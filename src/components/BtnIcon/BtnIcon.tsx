@@ -1,34 +1,25 @@
 import React from "react"
 import { IonButton, IonIcon } from "@ionic/react"
-import styled from "styled-components"
 
 const BtnIcon: React.FC<{
-  color?: undefined | "primary" | "transparent"
+  color?: string
   icon: any
   onClickHandle?: () => void
   disabled?: boolean | undefined
-}> = ({ onClickHandle, disabled, icon, color }) => {
+  fill?: "clear" | "solid" | undefined
+  size?: "small" | "med" | "large" | undefined
+}> = ({ onClickHandle, disabled, icon, color, fill, size }) => {
   return (
-    <ButtonStyled
-      colorback={color}
+    <IonButton
       onClick={onClickHandle}
       disabled={disabled === undefined ? false : disabled}
+      shape="round"
+      color={color}
+      fill={fill}
     >
-      <IonIcon slot="icon-only" icon={icon} />
-    </ButtonStyled>
+      <IonIcon slot="icon-only" icon={icon} size={size} />
+    </IonButton>
   )
 }
-
-const back =
-  "linear-gradient(30deg,rgb(231, 106, 106) 0%, rgba(223, 56, 56, 1) 50%, rgb(231, 106, 106) 100%)"
-
-const ButtonStyled = styled(IonButton)<{ colorback: any }>`
-  --background: #df3838;
-  --background: ${({ colorback }) =>
-    colorback === "primary" ? back : ""} !important;
-  --border-radius: 9999px !important;
-  width: 50px !important;
-  height: 50px !important;
-`
 
 export default BtnIcon

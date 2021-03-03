@@ -21,7 +21,7 @@ const InputConfig: React.FC<{
 }> = ({ icon, options, title, type, placeholder, value, onChange }) => {
   return (
     <IntemSelect>
-      <IconSelect slot="start" icon={icon} size="small" color="secondary" />
+      <IconSelect slot="start" icon={icon} size="small" color="primary" />
       <LabelSelectStyled position="stacked">{title}</LabelSelectStyled>
       {type === "select" ? (
         <SelectStyled
