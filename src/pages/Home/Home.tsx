@@ -136,7 +136,8 @@ const Home: React.FC = (props: any) => {
     pageByPlane: any,
     copies: any,
     interval: any,
-    nhojas: any
+    nhojas: any,
+    idConfig: any
   ) => {
     upConfig({
       variables: {
@@ -147,6 +148,7 @@ const Home: React.FC = (props: any) => {
         copies,
         interval,
         nhojas,
+        idConfig,
       },
     })
   }
@@ -267,7 +269,8 @@ const Home: React.FC = (props: any) => {
                       pageByPlane: any,
                       copies: any,
                       interval: any,
-                      nhojas: any
+                      nhojas: any,
+                      idConfig: any
                     ) =>
                       saveConfig(
                         id,
@@ -276,7 +279,8 @@ const Home: React.FC = (props: any) => {
                         pageByPlane,
                         copies,
                         interval,
-                        nhojas
+                        nhojas,
+                        idConfig
                       )
                     }
                   />

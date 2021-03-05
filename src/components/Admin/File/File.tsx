@@ -37,6 +37,7 @@ const File: React.FC<{
   const [configState, setConfigState] = useState()
   const [archivo, setArchivo] = useState()
   const [price, setPrice] = useState(0)
+  const [idConfig, setIdConfig] = useState(0)
 
   const [numPages, setNumPages] = useState(null)
 
@@ -49,16 +50,8 @@ const File: React.FC<{
     setConfigState(file.node.configEstado)
     setArchivo(file.node.archivo)
     setPrice(file.node.price)
-    console.log(file)
-  }, [
-    file.node.orientacion,
-    file.node.printTypes,
-    file.node.pageByPlane,
-    file.node.copies,
-    file.node.interval,
-    file.node.configEstado,
-    file.node.price,
-  ])
+    setIdConfig(file.node.idConfig)
+  }, [file])
 
   useEffect(() => {
     if (configState) {
@@ -68,6 +61,38 @@ const File: React.FC<{
   const onDocumentLoadSuccess = (data: any) => {
     setNumPages(data.numPages)
   }
+
+  useEffect(() => {
+    if (pageByPlane === "One page by plane") {
+      printTypes === "Simple"
+        ? orientacion === "Vertical"
+          ? setIdConfig(1)
+          : setIdConfig(10)
+        : orientacion === "Vertical"
+        ? setIdConfig(7)
+        : setIdConfig(16)
+    } else if (pageByPlane === "Two page by plane") {
+      printTypes === "Simple"
+        ? orientacion === "Vertical"
+          ? setIdConfig(2)
+          : setIdConfig(11)
+        : orientacion === "Vertical"
+        ? setIdConfig(5)
+        : setIdConfig(14)
+    } else if (pageByPlane === "Four page by plane") {
+      printTypes === "Simple"
+        ? orientacion === "Vertical"
+          ? setIdConfig(3)
+          : setIdConfig(12)
+        : orientacion === "Vertical"
+        ? setIdConfig(9)
+        : setIdConfig(15)
+    }
+  }, [orientacion, printTypes, pageByPlane])
+
+  useEffect(() => {
+    console.log(idConfig)
+  }, [idConfig])
 
   return (
     <CardStyled>
@@ -177,7 +202,8 @@ const File: React.FC<{
                     pageByPlane,
                     copies,
                     interval,
-                    numPages
+                    numPages,
+                    idConfig
                   )
                 }
               >

@@ -48,6 +48,7 @@ export const Query = {
               copies
               interval
               configEstado
+              idConfig
               nhojas
               price
             }
@@ -191,6 +192,7 @@ export const Query = {
         $copies: Int!
         $interval: String!
         $nhojas: Int!
+        $idConfig: Int!
       ) {
         UpdateImpresionConfig(
           id: $id
@@ -201,6 +203,7 @@ export const Query = {
           interval: $interval
           nhojas: $nhojas
           configEstado: true
+          idConfig: $idConfig
         ) {
           success
           error
