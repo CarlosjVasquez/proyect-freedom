@@ -58,7 +58,11 @@ const Home: React.FC = (props: any) => {
       console.log(userslogs)
       setId(userslogs.pk)
       setIdUser(userslogs.id)
-      // setSaldo(!userslogs.saldoSet[0].saldo ? "0" : userslogs.saldoSet[0].saldo)
+      setSaldo(
+        userslogs.saldoSet[0].saldo !== undefined
+          ? "0"
+          : userslogs.saldoSet[0].saldo
+      )
       setSkipQuery(false)
     },
     onError: (e) => {
