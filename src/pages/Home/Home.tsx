@@ -55,13 +55,10 @@ const Home: React.FC = (props: any) => {
       if (!userslogs.activar) {
         props.history.push("/registerdata")
       }
-      console.log(userslogs)
       setId(userslogs.pk)
       setIdUser(userslogs.id)
       setSaldo(
-        userslogs.saldoSet[0].saldo === undefined
-          ? "0"
-          : userslogs.saldoSet[0].saldo
+        userslogs.saldoSet[0] === undefined ? "0" : userslogs.saldoSet[0].saldo
       )
       setSkipQuery(false)
     },
