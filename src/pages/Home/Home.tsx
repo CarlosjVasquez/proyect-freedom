@@ -55,9 +55,10 @@ const Home: React.FC = (props: any) => {
       if (!userslogs.activar) {
         props.history.push("/registerdata")
       }
+      console.log(userslogs)
       setId(userslogs.pk)
       setIdUser(userslogs.id)
-      setSaldo(!userslogs.saldoSet[0].saldo ? "0" : userslogs.saldoSet[0].saldo)
+      // setSaldo(!userslogs.saldoSet[0].saldo ? "0" : userslogs.saldoSet[0].saldo)
       setSkipQuery(false)
     },
     onError: (e) => {
@@ -88,17 +89,16 @@ const Home: React.FC = (props: any) => {
         console.log(e)
       }
 
-        if (!loadFile && !errorData) {
-          //SuccessFunctionHere
-          setSkipQuery(true)
-          onCompleted(fileData)
-        } else if (!loadFile && errorData) {
-          //ErrorFunctionHere
-          setSkipQuery(true)
-          console.log("error login")
-          onError(errorData)
-        }
-      
+      if (!loadFile && !errorData) {
+        //SuccessFunctionHere
+        setSkipQuery(true)
+        onCompleted(fileData)
+      } else if (!loadFile && errorData) {
+        //ErrorFunctionHere
+        setSkipQuery(true)
+        console.log("error login")
+        onError(errorData)
+      }
     }
   }, [loadFile, fileData, errorData, skipQuery])
 
