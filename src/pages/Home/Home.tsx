@@ -59,7 +59,7 @@ const Home: React.FC = (props: any) => {
       setId(userslogs.pk)
       setIdUser(userslogs.id)
       setSaldo(
-        userslogs.saldoSet[0].saldo !== undefined
+        userslogs.saldoSet[0].saldo === undefined
           ? "0"
           : userslogs.saldoSet[0].saldo
       )
