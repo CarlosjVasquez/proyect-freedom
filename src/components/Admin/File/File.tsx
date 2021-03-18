@@ -90,9 +90,6 @@ const File: React.FC<{
     }
   }, [orientacion, printTypes, pageByPlane])
 
-  useEffect(() => {
-    console.log(idConfig)
-  }, [idConfig])
 
   return (
     <CardStyled>

@@ -57,7 +57,7 @@ const Home: React.FC = (props: any) => {
       }
       setId(userslogs.pk)
       setIdUser(userslogs.id)
-      setSaldo(userslogs.saldoSet[0].saldo)
+      setSaldo(!userslogs.saldoSet[0].saldo ? "0" : userslogs.saldoSet[0].saldo)
       setSkipQuery(false)
     },
     onError: (e) => {
@@ -88,18 +88,17 @@ const Home: React.FC = (props: any) => {
         console.log(e)
       }
 
-      if (onError || onCompleted) {
-        if (onCompleted && !loadFile && !errorData) {
+        if (!loadFile && !errorData) {
           //SuccessFunctionHere
           setSkipQuery(true)
           onCompleted(fileData)
-        } else if (onError && !loadFile && errorData) {
+        } else if (!loadFile && errorData) {
           //ErrorFunctionHere
           setSkipQuery(true)
           console.log("error login")
           onError(errorData)
         }
-      }
+      
     }
   }, [loadFile, fileData, errorData, skipQuery])
 
