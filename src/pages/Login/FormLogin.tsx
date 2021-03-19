@@ -3,7 +3,7 @@ import { IonCol, IonRow } from "@ionic/react"
 
 import { personCircleOutline, lockClosedOutline } from "ionicons/icons"
 
-import { useQuery } from "@apollo/client"
+import { useQuery, useMutation } from "@apollo/client"
 import { Query } from "../../server/querys"
 
 import AuthLayout from "../../Layouts/AuthLayout/AuthLayout"
@@ -23,6 +23,7 @@ interface Token {
 }
 
 const login = Query.query.login
+const CONTROLUSER = Query.mutation.controlUser
 
 const FormLogin: React.FC = (props: any) => {
   const [userName, setUsername] = useState<string>("")
@@ -32,7 +33,9 @@ const FormLogin: React.FC = (props: any) => {
 
   const [skipQuery, setSkipQuery] = useState(true)
 
-  const { loading, data: fileData, error: errorData } = useQuery<{
+  const [ControlUser] = useMutation(CONTROLUSER)
+
+  const { loading } = useQuery<{
     tokenAuth: Token
   }>(login, {
     variables: {
@@ -41,41 +44,66 @@ const FormLogin: React.FC = (props: any) => {
     },
     skip: skipQuery,
     fetchPolicy: "network-only",
+    onCompleted: ({ tokenAuth }: any) => {
+      console.log(tokenAuth)
+      ControlUser({
+        variables: {
+          idUser: tokenAuth.user.id,
+          tokenNW: tokenAuth.token,
+        },
+      })
+        .then(({ data }: any) => {
+          if (data.createControlUserData.success) {
+            if (!!tokenAuth) {
+              localStorage.setItem("token", tokenAuth.token!)
+              localStorage.setItem("refreshToken", tokenAuth.refreshToken!)
+
+              setPassword("")
+              setUsername("")
+              setSkipQuery(true)
+              props.history.push("/home")
+            }
+          }
+        })
+        .catch((e: any) => {
+          setSkipQuery(true)
+          setMessageError("Please, enter valid credentials")
+          setError(true)
+          console.log(e)
+        })
+    },
+    onError: (e: any) => {
+      setSkipQuery(true)
+      setMessageError("Please, enter valid credentials")
+      setError(true)
+      console.log(e)
+    },
   })
 
-  useEffect(() => {
-    if (!skipQuery) {
-      const onCompleted = ({ tokenAuth }: any) => {
-        if (!!tokenAuth) {
-          localStorage.setItem("token", tokenAuth.token!)
-          localStorage.setItem("refreshToken", tokenAuth.refreshToken!)
+  // useEffect(() => {
+  //   if (!skipQuery) {
+  //     const onCompleted = ({ tokenAuth }: any) => {}
 
-          setPassword("")
-          setUsername("")
-          props.history.push("/home")
-        }
-      }
+  //     const onError = (e: any) => {
+  //       setMessageError("Please, enter valid credentials")
+  //       setError(true)
+  //       console.log(e)
+  //     }
 
-      const onError = (e: any) => {
-        setMessageError("Please, enter valid credentials")
-        setError(true)
-        console.log(e)
-      }
-
-      if (onError || onCompleted) {
-        if (onCompleted && !loading && !errorData) {
-          //SuccessFunctionHere
-          setSkipQuery(true)
-          onCompleted(fileData)
-        } else if (onError && !loading && errorData) {
-          //ErrorFunctionHere
-          setSkipQuery(true)
-          console.log("error login")
-          onError(errorData)
-        }
-      }
-    }
-  }, [loading, fileData, errorData, skipQuery, props.history])
+  //     if (onError || onCompleted) {
+  //       if (onCompleted && !loading && !errorData) {
+  //         //SuccessFunctionHere
+  //         setSkipQuery(true)
+  //         onCompleted(fileData)
+  //       } else if (onError && !loading && errorData) {
+  //         //ErrorFunctionHere
+  //         setSkipQuery(true)
+  //         console.log("error login")
+  //         onError(errorData)
+  //       }
+  //     }
+  //   }
+  // }, [loading, fileData, errorData, skipQuery, props.history])
 
   const onBackHandle = () => {
     props.history.push("/init")

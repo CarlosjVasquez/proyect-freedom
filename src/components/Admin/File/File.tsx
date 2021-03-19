@@ -29,7 +29,7 @@ const File: React.FC<{
   saldo: any
 }> = ({ file, onDelete, onSavedConfig, saldo }) => {
   const [active, setActive] = useState(false)
-  const [orientacion, setOrientacion] = useState()
+  const [orientacion, setOrientacion] = useState("")
   const [printTypes, setPrintTypes] = useState()
   const [pageByPlane, setPageByPlane] = useState()
   const [copies, setCopies] = useState()
@@ -37,12 +37,24 @@ const File: React.FC<{
   const [configState, setConfigState] = useState()
   const [archivo, setArchivo] = useState()
   const [price, setPrice] = useState(0)
-  const [idConfig, setIdConfig] = useState(0)
+  const [idConfig, setIdConfig] = useState("")
 
   const [numPages, setNumPages] = useState(null)
 
   useEffect(() => {
-    setOrientacion(file.node.orientacion)
+    if (
+      file.node.orientacion === "Vertical" ||
+      file.node.orientacion === "Vertical horizontal" ||
+      file.node.orientacion === "Vertical 2" ||
+      file.node.orientacion === "Vertical vertical 2" ||
+      file.node.orientacion === "Vertical 3" ||
+      file.node.orientacion === "Vertical horizontal 3"
+    ) {
+      setOrientacion("Vertical")
+    } else {
+      setOrientacion("Horizontal")
+    }
+
     setPrintTypes(file.node.printTypes)
     setPageByPlane(file.node.pageByPlane)
     setCopies(file.node.copies)
@@ -50,7 +62,6 @@ const File: React.FC<{
     setConfigState(file.node.configEstado)
     setArchivo(file.node.archivo)
     setPrice(file.node.price)
-    setIdConfig(file.node.idConfig)
   }, [file])
 
   useEffect(() => {
@@ -66,30 +77,29 @@ const File: React.FC<{
     if (pageByPlane === "One page by plane") {
       printTypes === "Simple"
         ? orientacion === "Vertical"
-          ? setIdConfig(1)
-          : setIdConfig(10)
+          ? setIdConfig("Vertical")
+          : setIdConfig("Horizontal")
         : orientacion === "Vertical"
-        ? setIdConfig(7)
-        : setIdConfig(16)
+        ? setIdConfig("Vertical horizontal")
+        : setIdConfig("Horizontal vertical")
     } else if (pageByPlane === "Two page by plane") {
       printTypes === "Simple"
         ? orientacion === "Vertical"
-          ? setIdConfig(2)
-          : setIdConfig(11)
+          ? setIdConfig("Vertical 2")
+          : setIdConfig("Horizontal 2")
         : orientacion === "Vertical"
-        ? setIdConfig(5)
-        : setIdConfig(14)
+        ? setIdConfig("Vertical vertical 2")
+        : setIdConfig("Horizontal horizontal 2")
     } else if (pageByPlane === "Four page by plane") {
       printTypes === "Simple"
         ? orientacion === "Vertical"
-          ? setIdConfig(3)
-          : setIdConfig(12)
+          ? setIdConfig("Vertical 3")
+          : setIdConfig("Horizontal 3")
         : orientacion === "Vertical"
-        ? setIdConfig(9)
-        : setIdConfig(15)
+        ? setIdConfig("Vertical horizontal 3")
+        : setIdConfig("Horizontal horizontal 3")
     }
   }, [orientacion, printTypes, pageByPlane])
-
 
   return (
     <CardStyled>
@@ -194,13 +204,12 @@ const File: React.FC<{
                 onClick={() =>
                   onSavedConfig(
                     file.node.pk,
-                    orientacion,
+                    idConfig,
                     printTypes,
                     pageByPlane,
                     copies,
                     interval,
-                    numPages,
-                    idConfig
+                    numPages
                   )
                 }
               >

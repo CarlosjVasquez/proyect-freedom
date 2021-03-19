@@ -26,6 +26,7 @@ import BtnAddFile from "../../components/Admin/BtnAddFile/BtnAddFile"
 import File from "../../components/Admin/File/File"
 import AdminLayout from "../../Layouts/AdminLayout/AdminLayout"
 import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
+import Toast from "../../components/Toast/Toast"
 
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
@@ -42,6 +43,8 @@ const Home: React.FC = (props: any) => {
   const [saldo, setSaldo] = useState("0")
   const [showModal, setShowModal] = useState(false)
   const [amount, setAmount] = useState("3000")
+  const [error, setError] = useState<boolean>(false)
+  const [messageError, setMessageError] = useState<string>("")
 
   const token = localStorage.getItem("token")
 
@@ -64,6 +67,9 @@ const Home: React.FC = (props: any) => {
     },
     onError: (e) => {
       console.log(e)
+      // if(e.message === "You do not have permission to perform this action"){
+
+      // }
       props.history.push("/login")
     },
   })
@@ -121,34 +127,41 @@ const Home: React.FC = (props: any) => {
   }
 
   const [upConfig] = useMutation(UPCONFIG, {
-    onCompleted: () => {
-      setSkipQuery(false)
+    onCompleted: ({ UpdateImpresionConfig }: any) => {
+      console.log(UpdateImpresionConfig)
+      if (UpdateImpresionConfig.success) {
+        setSkipQuery(false)
+      } else {
+        setMessageError(UpdateImpresionConfig.error)
+        setError(true)
+      }
     },
     onError: (e) => {
       console.log(e)
+      setMessageError(e.message)
+      setError(true)
     },
   })
 
   const saveConfig = (
     id: any,
-    orientacion: any,
+    idConfig: any,
     printTypes: any,
     pageByPlane: any,
     copies: any,
     interval: any,
-    nhojas: any,
-    idConfig: any
+    nhojas: any
   ) => {
+    console.log(id, idConfig, printTypes, pageByPlane, copies, interval, nhojas)
     upConfig({
       variables: {
         id,
-        orientacion,
+        orientacion: idConfig,
         printTypes,
         pageByPlane,
         copies,
         interval,
         nhojas,
-        idConfig,
       },
     })
   }
@@ -264,23 +277,21 @@ const Home: React.FC = (props: any) => {
                     saldo={saldo}
                     onSavedConfig={(
                       id: any,
-                      orientacion: any,
+                      idConfig: any,
                       printTypes: any,
                       pageByPlane: any,
                       copies: any,
                       interval: any,
-                      nhojas: any,
-                      idConfig: any
+                      nhojas: any
                     ) =>
                       saveConfig(
                         id,
-                        orientacion,
+                        idConfig,
                         printTypes,
                         pageByPlane,
                         copies,
                         interval,
-                        nhojas,
-                        idConfig
+                        nhojas
                       )
                     }
                   />
@@ -299,6 +310,12 @@ const Home: React.FC = (props: any) => {
               )}
             </ListStyled>
           </IonCol>
+          <Toast
+            duration={1500}
+            active={error}
+            message={messageError}
+            onDidDismiss={() => setError(false)}
+          />
         </FirstRowStyled>
       </AdminLayout>
     </>

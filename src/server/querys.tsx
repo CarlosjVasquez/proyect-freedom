@@ -64,6 +64,7 @@ export const Query = {
           user {
             idTipoUserId
             idTipoUser
+            id
           }
         }
       }
@@ -192,7 +193,6 @@ export const Query = {
         $copies: Int!
         $interval: String!
         $nhojas: Int!
-        $idConfig: Int!
       ) {
         UpdateImpresionConfig(
           id: $id
@@ -203,7 +203,20 @@ export const Query = {
           interval: $interval
           nhojas: $nhojas
           configEstado: true
-          idConfig: $idConfig
+          tipoLoginU: "2"
+        ) {
+          success
+          error
+        }
+      }
+    `,
+    controlUser: gql`
+      mutation($idUser: ID!, $tokenNW: String!) {
+        createControlUserData(
+          id: $idUser
+          idtotemUsado: 0
+          tipoLoginU: "2"
+          tokenNW: $tokenNW
         ) {
           success
           error
