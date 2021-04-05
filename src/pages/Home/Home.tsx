@@ -33,7 +33,12 @@ import InputPrimary from "../../components/InputPrimary/InputPrimary"
 
 const user = Query.query.user
 const { allfiles: FILES } = Query.query
-const { delete: FDELETE, updateConfig: UPCONFIG } = Query.mutation
+const {
+  delete: FDELETE,
+  updateConfig: UPCONFIG,
+  solictAbono,
+  updateAbono,
+} = Query.mutation
 
 const Home: React.FC = (props: any) => {
   const [id, setId] = useState<number>()
@@ -42,9 +47,11 @@ const Home: React.FC = (props: any) => {
   const [skipQuery, setSkipQuery] = useState(true)
   const [saldo, setSaldo] = useState("0")
   const [showModal, setShowModal] = useState(false)
-  const [amount, setAmount] = useState("3000")
+  const [amount, setAmount] = useState<string>("3000")
   const [error, setError] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
+  const [idAbono, setIdAbono] = useState<number>(0)
+  const [dte, setDte] = useState<string>("Boleta")
 
   const token = localStorage.getItem("token")
 
@@ -167,14 +174,54 @@ const Home: React.FC = (props: any) => {
   }
 
   const rechargeAmount = () => {
-    const url = `https://hyhlibertad2.herokuapp.com/webpay/webpay-plus-create/${amount}/${id}`
-
-    if (amount < "3000") {
-      console.log("el monto minimo es de 3000")
-      return false
-    }
-
+    const url = `https://hyhlibertad2.herokuapp.com/webpay/webpay-plus-create/${idAbono}`
+    setShowModal(false)
+    setAmount("3000")
+    setDte("Boleta")
+    setIdAbono(0)
     window.open(url, "_blank")
+  }
+
+  const [SolictAbono] = useMutation(solictAbono, {
+    onCompleted: ({ idAbono }) => {
+      if (idAbono.success) {
+        setIdAbono(idAbono.success)
+        console.log(idAbono.success)
+        setShowModal(true)
+      }
+    },
+    onError: (e) => {
+      console.log(e)
+    },
+  })
+
+  const Abono = () => {
+    SolictAbono({
+      variables: {
+        idUser: id,
+      },
+    })
+  }
+
+  const [UpdateAbono] = useMutation(updateAbono, {
+    onCompleted: ({ updateAbono }) => {
+      if (updateAbono.success) {
+        rechargeAmount()
+      }
+    },
+    onError: (e) => {
+      console.log(e)
+    },
+  })
+
+  const UpAbono = () => {
+    UpdateAbono({
+      variables: {
+        idAbono,
+        amount,
+        dte: dte === "Boleta" ? 39 : 33,
+      },
+    })
   }
 
   return (
@@ -190,7 +237,7 @@ const Home: React.FC = (props: any) => {
               <CardSubtitleStyled> Current Balance </CardSubtitleStyled>
               <CardTitleStyled>${saldo}</CardTitleStyled>
               <ButtonOptionPrice
-                onClick={() => setShowModal(true)}
+                onClick={Abono}
                 fill="clear"
                 shape="round"
                 size="small"
@@ -222,15 +269,41 @@ const Home: React.FC = (props: any) => {
                             setIcon={cash}
                             setValue={amount}
                             setPlaceholder="Amount"
+                            select={true}
+                            options={[
+                              { option: "3000" },
+                              { option: "5000" },
+                              { option: "10000" },
+                              { option: "15000" },
+                              { option: "20000" },
+                              { option: "30000" },
+                              { option: "40000" },
+                              { option: "50000" },
+                              { option: "60000" },
+                              { option: "70000" },
+                              { option: "80000" },
+                              { option: "90000" },
+                              { option: "100000" },
+                            ]}
                             color="admin"
                           />
                         </IonCol>
                       </IonRow>
                       <IonRow>
-                        <BtnPrimary
-                          name="Login"
-                          onClickHandle={rechargeAmount}
-                        />
+                        <IonCol>
+                          <InputPrimary
+                            onChangeValue={(props: any) => setDte(props)}
+                            setIcon={cash}
+                            setValue={dte}
+                            setPlaceholder="D.T.E"
+                            select={true}
+                            options={[{ option: "Boleta" }]}
+                            color="admin"
+                          />
+                        </IonCol>
+                      </IonRow>
+                      <IonRow>
+                        <BtnPrimary name="Send" onClickHandle={UpAbono} />
                       </IonRow>
                     </ColModalStyled>
                   </FirstRowStyled>

@@ -223,5 +223,27 @@ export const Query = {
         }
       }
     `,
+    solictAbono: gql`
+      mutation($idUser: Int!) {
+        idAbono(idUserId: $idUser, estado: 1) {
+          success
+          error
+        }
+      }
+    `,
+    updateAbono: gql`
+      mutation($idAbono: ID!, $amount: Int!, $dte: Int!) {
+        updateAbono(
+          id: $idAbono
+          IdsaldoAbono: $amount
+          estado: 2
+          dte: $dte
+          nOperacion: 0
+        ) {
+          success
+          error
+        }
+      }
+    `,
   },
 }

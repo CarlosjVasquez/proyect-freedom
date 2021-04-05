@@ -48,7 +48,7 @@ const RegisterData: React.FC = (props: any) => {
         console.log(userslogs)
         setconfirmEmail(true)
       } else {
-        props.history.push("/home")
+        // props.history.push("/home")
       }
     },
     onError: (e) => {
@@ -56,8 +56,6 @@ const RegisterData: React.FC = (props: any) => {
       props.history.push("/login")
     },
   })
-
-  useEffect(() => {}, [data])
 
   const [updateData, { loading }] = useMutation<{ UpdateUserData: any }>(
     update,
