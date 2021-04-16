@@ -26,6 +26,7 @@ const InputPrimary: React.FC<{
   validate?: boolean
   space?: number
   color?: "admin" | undefined
+  disabled?: boolean | undefined
 }> = (props) => {
   const [focus, setFocus] = useState<boolean>(false)
   const [capture, setCapture] = useState<string>(props.setValue)
@@ -122,6 +123,7 @@ const InputPrimary: React.FC<{
                   : props.setType
               }
               value={props.setValue}
+              disabled={props.disabled ? props.disabled : false}
             />
           </InputCustomStyled>
           {props.setType === "password" && (
@@ -152,7 +154,10 @@ const InputPrimary: React.FC<{
               color={props.color === "admin" ? "primary" : ""}
             >
               {props.options.map((user: any, key: any) => (
-                <IonSelectOption key={key} value={user.option.toLowerCase()}>
+                <IonSelectOption
+                  key={key}
+                  value={user.value ? user.value : user.option.toLowerCase()}
+                >
                   {user.option}
                 </IonSelectOption>
               ))}
@@ -223,6 +228,7 @@ const LabelStyled = styled(IonLabel)<{
       ? "translateY(-180%) scale(0.95)"
       : "translateY(-50%) scale(1)"};
   transition: transform cubic-bezier(0.5, -0.5, 0.5, 1.5) 0.25s;
+  opacity: 1 !important;
 `
 
 const SelectStyled = styled(IonSelect)`

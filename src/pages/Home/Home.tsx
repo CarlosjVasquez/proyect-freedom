@@ -31,13 +31,15 @@ import Toast from "../../components/Toast/Toast"
 import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
 
-const user = Query.query.user
-const { allfiles: FILES } = Query.query
+const { user, listRazon, allfiles: FILES } = Query.query
+
 const {
   delete: FDELETE,
   updateConfig: UPCONFIG,
   solictAbono,
   updateAbono,
+  verify,
+  refreshToken,
 } = Query.mutation
 
 const Home: React.FC = (props: any) => {
@@ -51,11 +53,87 @@ const Home: React.FC = (props: any) => {
   const [error, setError] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
   const [idAbono, setIdAbono] = useState<number>(0)
-  const [dte, setDte] = useState<string>("Boleta")
+  const [dte, setDte] = useState<string>("boleta")
+  const [rsId, setRsId] = useState<number>(0)
+  const [listRs, setListRs] = useState<any>()
+  const [rs, setRs] = useState<boolean>(false)
+  const [skipList, setSkipList] = useState(true)
 
   const token = localStorage.getItem("token")
 
   const date = new Date()
+
+  const [RefreshToken] = useMutation(refreshToken, {
+    onCompleted: ({ refreshToken }) => {
+      localStorage.setItem("token", refreshToken.token)
+    },
+    onError: (e) => {
+      console.log(e)
+      props.history.push("/login")
+    },
+  })
+
+  const [Verify] = useMutation(verify, {
+    onError: () => {
+      RefreshToken({
+        variables: {
+          refresh: localStorage.getItem("refreshToken"),
+        },
+      })
+    },
+  })
+
+  const { loading: listload } = useQuery(listRazon, {
+    variables: {
+      idUser: id,
+    },
+
+    skip: skipList,
+    onCompleted: ({ razonSocial2 }) => {
+      let list: object[] = []
+
+      razonSocial2.edges.map((item: any) => {
+        list.push({ option: item.node.razonsocial, value: item.node.pk })
+      })
+
+      setListRs(list)
+      setSkipList(true)
+      setRs(true)
+    },
+    onError: (e) => {
+      console.log(e)
+    },
+  })
+
+  useEffect(() => {
+    const verifyTokenUser = setInterval(() => {
+      Verify({
+        variables: {
+          token:
+            localStorage.getItem("token") === null
+              ? ""
+              : localStorage.getItem("token"),
+        },
+      })
+    }, 1000)
+
+    return () => {
+      clearInterval(verifyTokenUser)
+    }
+  })
+
+  useEffect(() => {
+    if (dte === "Boleta" || dte === "boleta") {
+      setRs(false)
+      setSkipList(true)
+    } else {
+      if (!listRs) {
+        setSkipList(false)
+      } else {
+        setRs(true)
+      }
+    }
+  }, [dte])
 
   const { loading, data } = useQuery<{ userslogs: any }>(user, {
     variables: {
@@ -74,9 +152,6 @@ const Home: React.FC = (props: any) => {
     },
     onError: (e) => {
       console.log(e)
-      // if(e.message === "You do not have permission to perform this action"){
-
-      // }
       props.history.push("/login")
     },
   })
@@ -185,9 +260,8 @@ const Home: React.FC = (props: any) => {
   const [SolictAbono] = useMutation(solictAbono, {
     onCompleted: ({ idAbono }) => {
       if (idAbono.success) {
-        setIdAbono(idAbono.success)
-        console.log(idAbono.success)
         setShowModal(true)
+        setIdAbono(idAbono.success)
       }
     },
     onError: (e) => {
@@ -215,11 +289,13 @@ const Home: React.FC = (props: any) => {
   })
 
   const UpAbono = () => {
+    console.log(idAbono, amount, dte === "Boleta" ? 39 : 33, rs ? rsId : 0)
     UpdateAbono({
       variables: {
         idAbono,
         amount,
         dte: dte === "Boleta" ? 39 : 33,
+        idRazon: rs ? rsId : 0,
       },
     })
   }
@@ -286,6 +362,7 @@ const Home: React.FC = (props: any) => {
                               { option: "100000" },
                             ]}
                             color="admin"
+                            space={85}
                           />
                         </IonCol>
                       </IonRow>
@@ -297,11 +374,34 @@ const Home: React.FC = (props: any) => {
                             setValue={dte}
                             setPlaceholder="D.T.E"
                             select={true}
-                            options={[{ option: "Boleta" }]}
+                            options={[
+                              { option: "Boleta" },
+                              { option: "Factura" },
+                            ]}
                             color="admin"
+                            space={70}
                           />
                         </IonCol>
                       </IonRow>
+                      {rs && !listload ? (
+                        <>
+                          <IonRow>
+                            <IonCol>
+                              <InputPrimary
+                                onChangeValue={(props: any) => setRsId(props)}
+                                setIcon={cash}
+                                setValue={rsId}
+                                setPlaceholder="Razon Social"
+                                select={true}
+                                options={listRs}
+                                color="admin"
+                                space={120}
+                              />
+                            </IonCol>
+                          </IonRow>
+                        </>
+                      ) : null}
+
                       <IonRow>
                         <BtnPrimary name="Send" onClickHandle={UpAbono} />
                       </IonRow>

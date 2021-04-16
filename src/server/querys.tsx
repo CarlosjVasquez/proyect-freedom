@@ -69,8 +69,58 @@ export const Query = {
         }
       }
     `,
+    consultaRazon: gql`
+      query($id: Int!) {
+        consultaRazonSocial(id: $id) {
+          id
+          pk
+          city
+          municipio
+          rutRazon
+          razonsocial
+          idUser
+          giro
+          direccion
+          email
+        }
+      }
+    `,
+    listRazon: gql`
+      query($idUser: Int!) {
+        razonSocial2(idUser: $idUser) {
+          edges {
+            node {
+              pk
+              city
+              municipio
+              rutRazon
+              razonsocial
+              idUser
+              giro
+              direccion
+              email
+            }
+          }
+        }
+      }
+    `,
   },
   mutation: {
+    verify: gql`
+      mutation($token: String!) {
+        verifyToken(token: $token) {
+          payload
+        }
+      }
+    `,
+    refreshToken: gql`
+      mutation($refresh: String!) {
+        refreshToken(refreshToken: $refresh) {
+          payload
+          token
+        }
+      }
+    `,
     create: gql`
       mutation(
         $username: String!
@@ -232,13 +282,68 @@ export const Query = {
       }
     `,
     updateAbono: gql`
-      mutation($idAbono: ID!, $amount: Int!, $dte: Int!) {
+      mutation($idAbono: ID!, $amount: Int!, $dte: Int!, $idRazon: Int!) {
         updateAbono(
           id: $idAbono
           IdsaldoAbono: $amount
           estado: 2
           dte: $dte
           nOperacion: 0
+          idRazon: $idRazon
+        ) {
+          success
+          error
+        }
+      }
+    `,
+    createRazon: gql`
+      mutation(
+        $city: String!
+        $municipio: String!
+        $rutRazon: String!
+        $socialRazon: String!
+        $idUser: Int!
+        $giro: String!
+        $direccion: String!
+        $email: String!
+      ) {
+        crearRazon(
+          city: $city
+          municipio: $municipio
+          rutRazon: $rutRazon
+          socialRazon: $socialRazon
+          idUser: $idUser
+          giro: $giro
+          direccion: $direccion
+          email: $email
+        ) {
+          success
+          error
+        }
+      }
+    `,
+    updateRazon: gql`
+      mutation(
+        $id: ID!
+        $city: String!
+        $municipio: String!
+        $rutRazon: String!
+        $socialRazon: String!
+        $idUser: Int!
+        $giro: String!
+        $direccion: String!
+        $email: String!
+      ) {
+        actualizarRazon(
+          id: $id
+          city: $city
+          municipio: $municipio
+          rutRazon: $rutRazon
+          socialRazon: $socialRazon
+          idUser: $idUser
+          giro: $giro
+          direccion: $direccion
+          email: $email
         ) {
           success
           error

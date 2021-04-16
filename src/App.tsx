@@ -9,9 +9,12 @@ import Init from "./pages/Init/Initial"
 import Register from "./pages/Register/Register"
 import UserData from "./pages/UserData/UserData"
 import Registerdata from "./pages/RegisterData/RegisterData"
-import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail'
-import ResetPasswordEmail from './pages/ResetPassword/ResetPasswordEmail'
-import ResetPassword from './pages/ResetPassword/ResetPassword'
+import ConfirmEmail from "./pages/ConfirmEmail/ConfirmEmail"
+import ResetPasswordEmail from "./pages/ResetPassword/ResetPasswordEmail"
+import ResetPassword from "./pages/ResetPassword/ResetPassword"
+import BusinessAdd from "./pages/Business/BusinessAdd"
+import BusinessDetail from "./pages/Business/BusinessDetail"
+import Business from "./pages/Business/Business"
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
@@ -41,6 +44,9 @@ const App: React.FC = () => {
       <IonApp>
         <IonReactRouter>
           <IonRouterOutlet>
+            <Route path="/businessdetail/:id" component={BusinessDetail} />
+            <Route path="/business" component={Business} />
+            <Route path="/businessadd" component={BusinessAdd} />
             <Route path="/resetpassword/:id" component={ResetPassword} />
             <Route path="/resetpasswordemail" component={ResetPasswordEmail} />
             <Route path="/confirmemail/:id" component={ConfirmEmail} />
