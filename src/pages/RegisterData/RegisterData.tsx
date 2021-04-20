@@ -114,6 +114,61 @@ const RegisterData: React.FC = (props: any) => {
     updateData()
   }
 
+  useEffect(() => {
+    if (rut !== "") {
+      let tmpstr = ""
+      let intlargo = rut
+      if (intlargo.length > 0) {
+        let crut = intlargo
+        let largo = crut.length
+        if (largo < 2) {
+          console.log("rut inválido")
+        }
+        for (let i = 0; i < crut.length; i++)
+          if (
+            crut.charAt(i) != " " &&
+            crut.charAt(i) != "." &&
+            crut.charAt(i) != "-"
+          ) {
+            tmpstr = tmpstr + crut.charAt(i)
+          }
+        let rut = tmpstr
+        crut = tmpstr
+        largo = crut.length
+
+        if (largo > 2) rut = crut.substring(0, largo - 1)
+        else rut = crut.charAt(0)
+
+        let dv = crut.charAt(largo - 1)
+
+        if (rut == null || dv == null) console.log(0)
+
+        let dvr = "0"
+        let suma = 0
+        let mul = 2
+
+        for (let j = rut.length - 1; j >= 0; j--) {
+          suma = suma + parseFloat(rut.charAt(j)) * mul
+          if (mul == 7) mul = 2
+          else mul++
+        }
+
+        let res = suma % 11
+        if (res == 1) dvr = "k"
+        else if (res == 0) dvr = "0"
+        else {
+          let dvi = 11 - res
+          dvr = dvi + ""
+        }
+
+        if (dvr != dv.toLowerCase()) {
+          console.log("El Rut Ingreso es Invalido")
+        }
+        console.log("El Rut Ingresado es Correcto!")
+      }
+    }
+  }, [rut])
+
   return (
     <>
       <AdminLayout

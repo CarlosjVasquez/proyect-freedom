@@ -59,7 +59,6 @@ const UserData: React.FC = (props: any) => {
                   <Card
                     key={key}
                     title={item.node.razonsocial}
-                    created="prueba"
                     onHandleCard={() =>
                       props.history.push(`/businessdetail/${item.node.pk}`)
                     }

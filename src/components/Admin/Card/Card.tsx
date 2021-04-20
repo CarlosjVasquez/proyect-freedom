@@ -6,7 +6,7 @@ import { businessOutline } from "ionicons/icons"
 
 const Card: React.FC<{
   title: any
-  created: any
+  created?: any
   onHandleCard: any
 }> = ({ title, created, onHandleCard }) => {
   return (
@@ -20,9 +20,11 @@ const Card: React.FC<{
         />
         <IonLabel>
           <TitleStyled>{title}</TitleStyled>
-          <CreateStyled>
-            Created: {new Date(created).toLocaleString()}
-          </CreateStyled>
+          {created && (
+            <CreateStyled>
+              Created: {new Date(created).toLocaleString()}
+            </CreateStyled>
+          )}
         </IonLabel>
       </ItemStyled>
     </CardStyled>

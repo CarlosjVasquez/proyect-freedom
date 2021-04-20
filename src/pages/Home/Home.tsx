@@ -123,7 +123,7 @@ const Home: React.FC = (props: any) => {
   })
 
   useEffect(() => {
-    if (dte === "Boleta" || dte === "boleta") {
+    if (dte === "boleta") {
       setRs(false)
       setSkipList(true)
     } else {
@@ -252,7 +252,7 @@ const Home: React.FC = (props: any) => {
     const url = `https://hyhlibertad2.herokuapp.com/webpay/webpay-plus-create/${idAbono}`
     setShowModal(false)
     setAmount("3000")
-    setDte("Boleta")
+    setDte("boleta")
     setIdAbono(0)
     window.open(url, "_blank")
   }
@@ -289,12 +289,12 @@ const Home: React.FC = (props: any) => {
   })
 
   const UpAbono = () => {
-    console.log(idAbono, amount, dte === "Boleta" ? 39 : 33, rs ? rsId : 0)
+    console.log(idAbono, amount, dte === "boleta" ? 39 : 33, rs ? rsId : 0)
     UpdateAbono({
       variables: {
         idAbono,
         amount,
-        dte: dte === "Boleta" ? 39 : 33,
+        dte: dte === "boleta" ? 39 : 33,
         idRazon: rs ? rsId : 0,
       },
     })
@@ -375,8 +375,8 @@ const Home: React.FC = (props: any) => {
                             setPlaceholder="D.T.E"
                             select={true}
                             options={[
-                              { option: "Boleta" },
-                              { option: "Factura" },
+                              { option: "boleta" },
+                              { option: "factura" },
                             ]}
                             color="admin"
                             space={70}

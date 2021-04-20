@@ -35,33 +35,33 @@ const BtnAddFile: React.FC<{
     },
   })
 
-  // const widget = (window as any).cloudinary.createUploadWidget(
-  //   {
-  //     cloudName: "dhdjnyxht",
-  //     uploadPreset: "iqspxphc",
-  //   },
-  //   (error: any, result: any) => checkUploadResult(result)
-  // )
+  const widget = (window as any).cloudinary.createUploadWidget(
+    {
+      cloudName: "dhdjnyxht",
+      uploadPreset: "iqspxphc",
+    },
+    (error: any, result: any) => checkUploadResult(result)
+  )
 
-  // const checkUploadResult = (resultEvent: any) => {
-  //   if (resultEvent.event === "success") {
-  //     console.log(resultEvent)
-  //     setThefile(resultEvent.info.secure_url)
-  //     setNombre(resultEvent.info.original_filename)
-  //     setCreate(resultEvent.info.created_at)
-  //     uplo()
-  //   }
-  // }
+  const checkUploadResult = (resultEvent: any) => {
+    if (resultEvent.event === "success") {
+      console.log(resultEvent)
+      setThefile(resultEvent.info.secure_url)
+      setNombre(resultEvent.info.original_filename)
+      setCreate(resultEvent.info.created_at)
+      uplo()
+    }
+  }
 
-  // const showWidget = () => {
-  //   widget.open()
-  // }
+  const showWidget = () => {
+    widget.open()
+  }
 
   return (
     <BtnIcon
       color={color}
       icon={documentadd}
-      // onClickHandle={showWidget}
+      onClickHandle={showWidget}
       fill={fill}
       size={size}
     />
