@@ -115,7 +115,7 @@ const Home: React.FC = (props: any) => {
               : localStorage.getItem("token"),
         },
       })
-    }, 1000)
+    }, 60000)
 
     return () => {
       clearInterval(verifyTokenUser)

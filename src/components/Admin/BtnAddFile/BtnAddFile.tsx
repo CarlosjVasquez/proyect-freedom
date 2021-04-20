@@ -58,13 +58,15 @@ const BtnAddFile: React.FC<{
   }
 
   return (
-    <BtnIcon
-      color={color}
-      icon={documentadd}
-      onClickHandle={showWidget}
-      fill={fill}
-      size={size}
-    />
+    <>
+      <BtnIcon
+        color={color}
+        icon={documentadd}
+        onClickHandle={showWidget}
+        fill={fill}
+        size={size}
+      />
+    </>
   )
 }
 
