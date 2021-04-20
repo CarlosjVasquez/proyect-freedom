@@ -17,6 +17,8 @@ import AdminLayout from "../../Layouts/AdminLayout/AdminLayout"
 import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
 
 const { createRazon } = Query.mutation
+const { listRazon } = Query.query
+
 const user = Query.query.userdata
 
 const UserData: React.FC = (props: any) => {
@@ -48,6 +50,12 @@ const UserData: React.FC = (props: any) => {
   })
 
   const [RegisterRazon] = useMutation(createRazon, {
+    refetchQueries: [
+      {
+        query: listRazon,
+        variables: { idUser },
+      },
+    ],
     variables: {
       city,
       municipio,
