@@ -16,6 +16,8 @@ import BusinessAdd from "./pages/Business/BusinessAdd"
 import BusinessDetail from "./pages/Business/BusinessDetail"
 import Business from "./pages/Business/Business"
 
+import AppUrlListener from "./pages/AppUrlListener"
+
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css"
 
@@ -43,6 +45,7 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <IonApp>
         <IonReactRouter>
+          <AppUrlListener></AppUrlListener>
           <IonRouterOutlet>
             <Route path="/businessdetail/:id" component={BusinessDetail} />
             <Route path="/business" component={Business} />

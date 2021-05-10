@@ -27,7 +27,7 @@ const BtnAddFile: React.FC<{
       thefile: thefile,
       created: create,
     },
-    onCompleted: (e) => {
+    onCompleted: () => {
       onSuccess(false)
     },
     onError: (e) => {
@@ -45,7 +45,6 @@ const BtnAddFile: React.FC<{
 
   const checkUploadResult = (resultEvent: any) => {
     if (resultEvent.event === "success") {
-      console.log(resultEvent)
       setThefile(resultEvent.info.secure_url)
       setNombre(resultEvent.info.original_filename)
       setCreate(resultEvent.info.created_at)

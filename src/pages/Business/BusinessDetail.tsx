@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { useQuery, useMutation } from "@apollo/client"
 import { IonRow, IonCol, IonToast } from "@ionic/react"
 import {
   alertCircle,
   personCircleOutline,
   checkmarkCircleOutline,
+  business,
+  map,
+  navigate,
+  mail,
 } from "ionicons/icons"
 
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
@@ -13,6 +17,7 @@ import { Query } from "../../server/querys"
 import AdminLayout from "../../Layouts/AdminLayout/AdminLayout"
 import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
 import { RouteComponentProps } from "react-router-dom"
+import BtnBack from "../../components/BtnBack/BtnBack"
 
 const { updateRazon } = Query.mutation
 const { userdata, consultaRazon } = Query.query
@@ -87,14 +92,18 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
       email,
     },
     onCompleted: ({ actualizarRazon }) => {
-      console.log(actualizarRazon)
       if (actualizarRazon.success) {
         setMessageConfirm("Business name updated")
         setConfirmCreate(true)
+        props.history.push("/business")
+      } else {
+        setMessageError(actualizarRazon.error)
+        setErrorCreate(true)
       }
     },
     onError: (e) => {
       console.log(e)
+      return
     },
   })
 
@@ -138,6 +147,10 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
     RegisterRazon()
   }
 
+  const onBackHandle = () => {
+    props.history.push("/business")
+  }
+
   return (
     <>
       <AdminLayout
@@ -145,7 +158,8 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
         loading={loading}
         username={data?.userslogs.username}
       >
-        <FirstRowStyled marginTop={25}>
+        <FirstRowStyled>
+          <BtnBack onBack={onBackHandle} color="primary" />
           <IonCol>
             {loadingRazon ? (
               <>Loading...</>
@@ -186,18 +200,8 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
                       color="admin"
                       setType="email"
                       space={70}
-                    />
-                  </IonCol>
-                </IonRow>
-                <IonRow>
-                  <IonCol>
-                    <InputPrimary
-                      onChangeValue={(props: any) => setCity(props)}
-                      setIcon={personCircleOutline}
-                      setValue={city}
-                      setPlaceholder="Ciudad"
-                      color="admin"
-                      space={80}
+                      setIcon={mail}
+                      disabled={true}
                     />
                   </IonCol>
                 </IonRow>
@@ -205,9 +209,9 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
                   <IonCol>
                     <InputPrimary
                       onChangeValue={(props: any) => setMunicipio(props)}
-                      setIcon={personCircleOutline}
+                      setIcon={business}
                       setValue={municipio}
-                      setPlaceholder="Municipio"
+                      setPlaceholder="Región"
                       color="admin"
                       space={95}
                     />
@@ -216,8 +220,20 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
                 <IonRow>
                   <IonCol>
                     <InputPrimary
+                      onChangeValue={(props: any) => setCity(props)}
+                      setIcon={business}
+                      setValue={city}
+                      setPlaceholder="Comuna"
+                      color="admin"
+                      space={80}
+                    />
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol>
+                    <InputPrimary
                       onChangeValue={(props: any) => setDireccion(props)}
-                      setIcon={personCircleOutline}
+                      setIcon={map}
                       setValue={direccion}
                       setPlaceholder="Dirección"
                       color="admin"
@@ -229,7 +245,7 @@ const UserData: React.FC<UserDetailPageProps> = (props: any) => {
                   <IonCol>
                     <InputPrimary
                       onChangeValue={(props: any) => setGiro(props)}
-                      setIcon={personCircleOutline}
+                      setIcon={navigate}
                       setValue={giro}
                       setPlaceholder="Giro"
                       color="admin"

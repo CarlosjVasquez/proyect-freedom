@@ -16,10 +16,18 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonAlert,
 } from "@ionic/react"
 import { useQuery, useMutation } from "@apollo/client"
 
-import { addCircle, cash, closeCircle, refresh } from "ionicons/icons"
+import {
+  addCircle,
+  cash,
+  closeCircle,
+  refresh,
+  newspaper,
+  business,
+} from "ionicons/icons"
 
 import { Query } from "../../server/querys"
 import BtnAddFile from "../../components/Admin/BtnAddFile/BtnAddFile"
@@ -58,6 +66,7 @@ const Home: React.FC = (props: any) => {
   const [listRs, setListRs] = useState<any>()
   const [rs, setRs] = useState<boolean>(false)
   const [skipList, setSkipList] = useState(true)
+  const [welcome, setWelcome] = useState(false)
 
   const token = localStorage.getItem("token")
 
@@ -93,7 +102,7 @@ const Home: React.FC = (props: any) => {
       let list: object[] = []
 
       razonSocial2.edges.map((item: any) => {
-        list.push({ option: item.node.razonsocial, value: item.node.pk })
+        return list.push({ option: item.node.razonsocial, value: item.node.pk })
       })
 
       setListRs(list)
@@ -133,7 +142,7 @@ const Home: React.FC = (props: any) => {
         setRs(true)
       }
     }
-  }, [dte])
+  }, [dte, listRs])
 
   const { loading, data } = useQuery<{ userslogs: any }>(user, {
     variables: {
@@ -149,6 +158,7 @@ const Home: React.FC = (props: any) => {
         userslogs.saldoSet[0] === undefined ? "0" : userslogs.saldoSet[0].saldo
       )
       setSkipQuery(false)
+      setWelcome(true)
     },
     onError: (e) => {
       console.log(e)
@@ -171,7 +181,12 @@ const Home: React.FC = (props: any) => {
   useEffect(() => {
     if (!skipQuery) {
       const onCompleted = ({ allUploads }: any) => {
-        setFilesList(allUploads.edges)
+        const ordFiles = allUploads.edges.slice().sort((a: any, b: any) => {
+          const fecha1: any = new Date(b.node.created)
+          const fecha2: any = new Date(a.node.created)
+          return fecha1 - fecha2
+        })
+        setFilesList(ordFiles)
       }
 
       const onError = (e: any) => {
@@ -179,13 +194,10 @@ const Home: React.FC = (props: any) => {
       }
 
       if (!loadFile && !errorData) {
-        //SuccessFunctionHere
         setSkipQuery(true)
         onCompleted(fileData)
       } else if (!loadFile && errorData) {
-        //ErrorFunctionHere
         setSkipQuery(true)
-        console.log("error login")
         onError(errorData)
       }
     }
@@ -210,7 +222,6 @@ const Home: React.FC = (props: any) => {
 
   const [upConfig] = useMutation(UPCONFIG, {
     onCompleted: ({ UpdateImpresionConfig }: any) => {
-      console.log(UpdateImpresionConfig)
       if (UpdateImpresionConfig.success) {
         setSkipQuery(false)
       } else {
@@ -234,7 +245,6 @@ const Home: React.FC = (props: any) => {
     interval: any,
     nhojas: any
   ) => {
-    console.log(id, idConfig, printTypes, pageByPlane, copies, interval, nhojas)
     upConfig({
       variables: {
         id,
@@ -289,7 +299,6 @@ const Home: React.FC = (props: any) => {
   })
 
   const UpAbono = () => {
-    console.log(idAbono, amount, dte === "boleta" ? 39 : 33, rs ? rsId : 0)
     UpdateAbono({
       variables: {
         idAbono,
@@ -307,6 +316,12 @@ const Home: React.FC = (props: any) => {
         loading={loading}
         username={data?.userslogs.username}
       >
+        <IonAlert
+          isOpen={welcome}
+          onDidDismiss={() => setWelcome(false)}
+          header={"Welcome"}
+          message={`Xirux welcomes you ${data?.userslogs.username}`}
+        />
         <FirstRowStyled>
           <IonCol>
             <CardStyled color="secondary" padding={50} mb={20}>
@@ -370,7 +385,7 @@ const Home: React.FC = (props: any) => {
                         <IonCol>
                           <InputPrimary
                             onChangeValue={(props: any) => setDte(props)}
-                            setIcon={cash}
+                            setIcon={newspaper}
                             setValue={dte}
                             setPlaceholder="D.T.E"
                             select={true}
@@ -384,26 +399,41 @@ const Home: React.FC = (props: any) => {
                         </IonCol>
                       </IonRow>
                       {rs && !listload ? (
-                        <>
-                          <IonRow>
-                            <IonCol>
-                              <InputPrimary
-                                onChangeValue={(props: any) => setRsId(props)}
-                                setIcon={cash}
-                                setValue={rsId}
-                                setPlaceholder="Razon Social"
-                                select={true}
-                                options={listRs}
-                                color="admin"
-                                space={120}
-                              />
-                            </IonCol>
-                          </IonRow>
-                        </>
+                        listRs.length !== 0 ? (
+                          <>
+                            <IonRow>
+                              <IonCol>
+                                <InputPrimary
+                                  onChangeValue={(props: any) => setRsId(props)}
+                                  setIcon={business}
+                                  setValue={rsId}
+                                  setPlaceholder="Razon Social"
+                                  select={true}
+                                  options={listRs}
+                                  color="admin"
+                                  space={120}
+                                />
+                              </IonCol>
+                            </IonRow>
+                          </>
+                        ) : (
+                          <>
+                            <CardStyled
+                              onClick={() => props.history.push("/businessadd")}
+                              padding={20}
+                            >
+                              <IonCardContent>+ Add Billing</IonCardContent>
+                            </CardStyled>
+                          </>
+                        )
                       ) : null}
 
                       <IonRow>
-                        <BtnPrimary name="Send" onClickHandle={UpAbono} />
+                        <BtnPrimary
+                          disabled={rs && rsId === 0 ? true : false}
+                          name="Send"
+                          onClickHandle={UpAbono}
+                        />
                       </IonRow>
                     </ColModalStyled>
                   </FirstRowStyled>

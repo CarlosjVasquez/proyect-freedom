@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { IonCol, IonRow } from "@ionic/react"
 
 import { personCircleOutline, lockClosedOutline } from "ionicons/icons"
@@ -45,7 +45,6 @@ const FormLogin: React.FC = (props: any) => {
     skip: skipQuery,
     fetchPolicy: "network-only",
     onCompleted: ({ tokenAuth }: any) => {
-      console.log(tokenAuth)
       ControlUser({
         variables: {
           idUser: tokenAuth.user.id,

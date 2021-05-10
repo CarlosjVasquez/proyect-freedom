@@ -18,7 +18,7 @@ const InputPrimary: React.FC<{
   setValue?: any
   setIcon?: any
   setPlaceholder?: string
-  setType?: "text" | "number" | "email" | "password"
+  setType?: "text" | "number" | "email" | "password" | "tel"
   select?: boolean | undefined
   date?: boolean | undefined
   options?: any
@@ -32,6 +32,8 @@ const InputPrimary: React.FC<{
   const [capture, setCapture] = useState<string>(props.setValue)
   const [viewValue, setViewValue] = useState<boolean>(false)
   const [typeValue, setTypeValue] = useState<boolean>(false)
+
+  const actDate = new Date().getFullYear()
 
   useEffect(() => {
     if (props.setValue !== "") setFocus(true)
@@ -70,6 +72,8 @@ const InputPrimary: React.FC<{
                 : props.validate
                 ? "success"
                 : "warning"
+              : props.color === "admin"
+              ? "primary"
               : ""
             : props.color === "admin"
             ? "primary"
@@ -88,9 +92,11 @@ const InputPrimary: React.FC<{
               onIonChange={changeValue}
               displayFormat="DD MM YYYY"
               min="1980"
+              max={`${actDate - 18}`}
               color={props.color === "admin" ? "primary" : ""}
               onFocus={() => setFocus(true)}
               onBlur={() => capture === "" && setFocus(false)}
+              disabled={props.disabled ? props.disabled : false}
             />
             <LabelStyled
               color={props.color === "admin" ? "primary" : ""}

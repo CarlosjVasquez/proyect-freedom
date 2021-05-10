@@ -25,7 +25,9 @@ const RegisterData: React.FC = (props: any) => {
   const [firstname, setFirstname] = useState<string>("")
   const [lastname, setLastname] = useState<string>("")
   const [rut, setRut] = useState<string>("")
+  const [rutValidate, setRutValidate] = useState(false)
   const [tlf, setTlf] = useState<string>("")
+  const [tlfValidate, setTlfValidate] = useState(false)
   const [sexo, setSexo] = useState<string>("")
   const [fechaNacimiento, setFechaNacimiento] = useState<any>("")
   const [pk, setPk] = useState()
@@ -45,7 +47,6 @@ const RegisterData: React.FC = (props: any) => {
       if (!userslogs.activar) {
         setEmail(userslogs.email)
         setPk(userslogs.pk)
-        console.log(userslogs)
         setconfirmEmail(true)
       } else {
         // props.history.push("/home")
@@ -75,7 +76,6 @@ const RegisterData: React.FC = (props: any) => {
           setMessageConfirm("Register successful")
           setConfirmCreate(true)
         }
-        console.log(UpdateUserData)
       },
       onError: (e) => {
         setMessageError("Error")
@@ -96,8 +96,18 @@ const RegisterData: React.FC = (props: any) => {
       setError(true)
       return
     }
+    if (!rutValidate) {
+      setMessageError("Rut invalid")
+      setError(true)
+      return
+    }
     if (tlf === "") {
       setMessageError("Please, Mobile is required")
+      setError(true)
+      return
+    }
+    if (!tlfValidate) {
+      setMessageError("Mobile invalid")
       setError(true)
       return
     }
@@ -115,6 +125,41 @@ const RegisterData: React.FC = (props: any) => {
   }
 
   useEffect(() => {
+    tlf.length < 10 ? setTlfValidate(false) : setTlfValidate(true)
+  }, [tlf])
+
+  const telFormat = (prop: any) => {
+    const numberOnly = new RegExp(/^\d{0,10}$/)
+
+    if (numberOnly.test(prop) || prop === "") {
+      setTlf(prop)
+    }
+  }
+
+  const rutFormat = (prop: any) => {
+    const numberOnly = new RegExp(/^\d{0,10}$/)
+
+    if (numberOnly.test(prop) || prop === "") {
+      setRut(prop)
+    }
+  }
+
+  const nameFormat = (prop: any) => {
+    const letterOnly = new RegExp(/^[a-zA-Z]{0,16}$/)
+
+    if (letterOnly.test(prop) || prop === "") {
+      setFirstname(prop)
+    }
+  }
+
+  const lastNameFormat = (prop: any) => {
+    const letterOnly = new RegExp(/^[a-zA-Z]{0,16}$/)
+
+    if (letterOnly.test(prop) || prop === "") {
+      setLastname(prop)
+    }
+  }
+  useEffect(() => {
     if (rut !== "") {
       let tmpstr = ""
       let intlargo = rut
@@ -122,13 +167,14 @@ const RegisterData: React.FC = (props: any) => {
         let crut = intlargo
         let largo = crut.length
         if (largo < 2) {
-          console.log("rut inválido")
+          setRutValidate(false)
+          return
         }
         for (let i = 0; i < crut.length; i++)
           if (
-            crut.charAt(i) != " " &&
-            crut.charAt(i) != "." &&
-            crut.charAt(i) != "-"
+            crut.charAt(i) !== " " &&
+            crut.charAt(i) !== "." &&
+            crut.charAt(i) !== "-"
           ) {
             tmpstr = tmpstr + crut.charAt(i)
           }
@@ -141,7 +187,7 @@ const RegisterData: React.FC = (props: any) => {
 
         let dv = crut.charAt(largo - 1)
 
-        if (rut == null || dv == null) console.log(0)
+        if (rut === null || dv === null) console.log(0)
 
         let dvr = "0"
         let suma = 0
@@ -149,22 +195,23 @@ const RegisterData: React.FC = (props: any) => {
 
         for (let j = rut.length - 1; j >= 0; j--) {
           suma = suma + parseFloat(rut.charAt(j)) * mul
-          if (mul == 7) mul = 2
+          if (mul === 7) mul = 2
           else mul++
         }
 
         let res = suma % 11
-        if (res == 1) dvr = "k"
-        else if (res == 0) dvr = "0"
+        if (res === 1) dvr = "k"
+        else if (res === 0) dvr = "0"
         else {
           let dvi = 11 - res
           dvr = dvi + ""
         }
 
-        if (dvr != dv.toLowerCase()) {
-          console.log("El Rut Ingreso es Invalido")
+        if (dvr !== dv.toLowerCase()) {
+          setRutValidate(false)
+          return
         }
-        console.log("El Rut Ingresado es Correcto!")
+        setRutValidate(true)
       }
     }
   }, [rut])
@@ -181,7 +228,7 @@ const RegisterData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setFirstname(props)}
+                  onChangeValue={(props: any) => nameFormat(props)}
                   setIcon={personCircleOutline}
                   setValue={firstname}
                   setPlaceholder="First Name"
@@ -192,7 +239,7 @@ const RegisterData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setLastname(props)}
+                  onChangeValue={(props: any) => lastNameFormat(props)}
                   setIcon={personCircleOutline}
                   setValue={lastname}
                   setPlaceholder="Last Name"
@@ -203,7 +250,7 @@ const RegisterData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setRut(props)}
+                  onChangeValue={(props: any) => rutFormat(props)}
                   setIcon={cardOutline}
                   setValue={rut}
                   setPlaceholder="RUT"
@@ -215,9 +262,10 @@ const RegisterData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setTlf(props)}
+                  onChangeValue={(props: any) => telFormat(props)}
                   setIcon={call}
                   setValue={tlf}
+                  setType="tel"
                   setPlaceholder="Mobile"
                   color="admin"
                 />
@@ -250,7 +298,20 @@ const RegisterData: React.FC = (props: any) => {
             </IonRow>
             <IonRow>
               <IonCol>
-                <BtnPrimary name="Save" onClickHandle={registerData} />
+                <BtnPrimary
+                  disabled={
+                    firstname !== "" &&
+                    lastname !== "" &&
+                    rut !== "" &&
+                    tlf !== "" &&
+                    fechaNacimiento !== "" &&
+                    sexo !== ""
+                      ? false
+                      : true
+                  }
+                  name="Save"
+                  onClickHandle={registerData}
+                />
               </IonCol>
             </IonRow>
             <IonToast

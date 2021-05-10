@@ -104,6 +104,18 @@ export const Query = {
         }
       }
     `,
+    version: gql`
+      query consultarVersion {
+        consultaVersion(estado: true) {
+          id
+          pk
+          apk
+          version
+          title
+          estado
+        }
+      }
+    `,
   },
   mutation: {
     verify: gql`

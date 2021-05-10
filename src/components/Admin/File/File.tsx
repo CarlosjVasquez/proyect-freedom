@@ -111,7 +111,10 @@ const File: React.FC<{
             Created: {new Date(file.node.created).toLocaleString()}
           </CreateStyled>
         </IonLabel>
-        <NoteStyled slot="end" color={price < saldo ? "success" : "danger"}>
+        <NoteStyled
+          slot="end"
+          color={price > saldo || !configState ? "danger" : "success"}
+        >
           {!configState ? <>----</> : <>${price}</>}
         </NoteStyled>
       </ItemStyled>

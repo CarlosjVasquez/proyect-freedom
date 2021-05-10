@@ -4,10 +4,11 @@ import { IonRow, IonCol, IonToast } from "@ionic/react"
 import {
   alertCircle,
   personCircleOutline,
-  cardOutline,
-  call,
-  calendarOutline,
   checkmarkCircleOutline,
+  navigate,
+  map,
+  business,
+  mail,
 } from "ionicons/icons"
 
 import InputPrimary from "../../components/InputPrimary/InputPrimary"
@@ -15,6 +16,7 @@ import BtnPrimary from "../../components/BtnPrimary/BtnPrimary"
 import { Query } from "../../server/querys"
 import AdminLayout from "../../Layouts/AdminLayout/AdminLayout"
 import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
+import BtnBack from "../../components/BtnBack/BtnBack"
 
 const { createRazon } = Query.mutation
 const { listRazon } = Query.query
@@ -24,7 +26,9 @@ const user = Query.query.userdata
 const UserData: React.FC = (props: any) => {
   const [socialRazon, setSocialRazon] = useState<string>("")
   const [rutRazon, setRutRazon] = useState<string>("")
+  const [rutValidate, setRutValidate] = useState(false)
   const [email, setEmail] = useState<string>("")
+  const [emailValidate, setEmailValidate] = useState<boolean>(false)
   const [city, setCity] = useState<string>("")
   const [municipio, setMunicipio] = useState<string>("")
   const [direccion, setDireccion] = useState<string>("")
@@ -90,8 +94,18 @@ const UserData: React.FC = (props: any) => {
       setErrorCreate(true)
       return
     }
+    if (!rutValidate) {
+      setMessageError("Rut invalid")
+      setErrorCreate(true)
+      return
+    }
     if (email === "") {
       setMessageError("Please, Email is required")
+      setErrorCreate(true)
+      return
+    }
+    if (!emailValidate) {
+      setMessageError("Email invalid")
       setErrorCreate(true)
       return
     }
@@ -120,6 +134,12 @@ const UserData: React.FC = (props: any) => {
   }
 
   useEffect(() => {
+    const regex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/
+
+    regex.test(email) ? setEmailValidate(true) : setEmailValidate(false)
+  }, [email])
+
+  useEffect(() => {
     if (rutRazon !== "") {
       let tmpstr = ""
       let intlargo = rutRazon
@@ -127,7 +147,7 @@ const UserData: React.FC = (props: any) => {
         let crut = rutRazon
         let largo = crut.length
         if (largo <= 2) {
-          return console.log("El Rut Ingreso es Invalido")
+          return setRutValidate(false)
         }
         for (let i = 0; i < crut.length; i++)
           if (
@@ -167,12 +187,32 @@ const UserData: React.FC = (props: any) => {
         }
 
         if (dvr !== dv.toLowerCase()) {
-          return console.log("El Rut Ingreso es Invalido")
+          return setRutValidate(false)
         }
-        console.log("El Rut Ingresado es Correcto!")
+        setRutValidate(true)
       }
     }
   }, [rutRazon])
+
+  const nameFormat = (prop: any) => {
+    const letterOnly = new RegExp(/^[a-zA-Z]{0,30}$/)
+
+    if (letterOnly.test(prop) || prop === "") {
+      setSocialRazon(prop)
+    }
+  }
+
+  const rutFormat = (prop: any) => {
+    const numberOnly = new RegExp(/^\d{0,10}$/)
+
+    if (numberOnly.test(prop) || prop === "") {
+      setRutRazon(prop)
+    }
+  }
+
+  const onBackHandle = () => {
+    props.history.push("/business")
+  }
 
   return (
     <>
@@ -181,12 +221,13 @@ const UserData: React.FC = (props: any) => {
         loading={loading}
         username={data?.userslogs.username}
       >
-        <FirstRowStyled marginTop={25}>
+        <FirstRowStyled>
+          <BtnBack onBack={onBackHandle} color="primary" />
           <IonCol>
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setSocialRazon(props)}
+                  onChangeValue={(props: any) => nameFormat(props)}
                   setIcon={personCircleOutline}
                   setValue={socialRazon}
                   setPlaceholder="Razon Social"
@@ -198,7 +239,7 @@ const UserData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setRutRazon(props)}
+                  onChangeValue={(props: any) => rutFormat(props)}
                   setIcon={personCircleOutline}
                   setValue={rutRazon}
                   setPlaceholder="Rut"
@@ -211,6 +252,7 @@ const UserData: React.FC = (props: any) => {
               <IonCol>
                 <InputPrimary
                   onChangeValue={(props: any) => setEmail(props)}
+                  setIcon={mail}
                   setValue={email}
                   setPlaceholder="Email"
                   color="admin"
@@ -222,22 +264,10 @@ const UserData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
-                  onChangeValue={(props: any) => setCity(props)}
-                  setIcon={personCircleOutline}
-                  setValue={city}
-                  setPlaceholder="Ciudad"
-                  color="admin"
-                  space={80}
-                />
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <InputPrimary
                   onChangeValue={(props: any) => setMunicipio(props)}
-                  setIcon={personCircleOutline}
+                  setIcon={business}
                   setValue={municipio}
-                  setPlaceholder="Municipio"
+                  setPlaceholder="Región"
                   color="admin"
                   space={95}
                 />
@@ -246,8 +276,20 @@ const UserData: React.FC = (props: any) => {
             <IonRow>
               <IonCol>
                 <InputPrimary
+                  onChangeValue={(props: any) => setCity(props)}
+                  setIcon={business}
+                  setValue={city}
+                  setPlaceholder="Comuna"
+                  color="admin"
+                  space={80}
+                />
+              </IonCol>
+            </IonRow>
+            <IonRow>
+              <IonCol>
+                <InputPrimary
                   onChangeValue={(props: any) => setDireccion(props)}
-                  setIcon={personCircleOutline}
+                  setIcon={map}
                   setValue={direccion}
                   setPlaceholder="Dirección"
                   color="admin"
@@ -259,7 +301,7 @@ const UserData: React.FC = (props: any) => {
               <IonCol>
                 <InputPrimary
                   onChangeValue={(props: any) => setGiro(props)}
-                  setIcon={personCircleOutline}
+                  setIcon={navigate}
                   setValue={giro}
                   setPlaceholder="Giro"
                   color="admin"
@@ -269,7 +311,21 @@ const UserData: React.FC = (props: any) => {
             </IonRow>
             <IonRow>
               <IonCol>
-                <BtnPrimary name="Create" onClickHandle={registerData} />
+                <BtnPrimary
+                  disabled={
+                    socialRazon !== "" &&
+                    rutRazon !== "" &&
+                    email !== "" &&
+                    city !== "" &&
+                    municipio !== "" &&
+                    direccion !== "" &&
+                    giro !== ""
+                      ? false
+                      : true
+                  }
+                  name="Register"
+                  onClickHandle={registerData}
+                />
               </IonCol>
             </IonRow>
             <IonToast

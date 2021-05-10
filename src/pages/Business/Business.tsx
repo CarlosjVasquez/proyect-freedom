@@ -8,6 +8,7 @@ import Card from "../../components/Admin/Card/Card"
 import { Query } from "../../server/querys"
 import AdminLayout from "../../Layouts/AdminLayout/AdminLayout"
 import { FirstRowStyled } from "../../components/ContainerForm/ContainerForm"
+import BtnBack from "../../components/BtnBack/BtnBack"
 
 const { userdata, listRazon } = Query.query
 
@@ -42,6 +43,10 @@ const UserData: React.FC = (props: any) => {
     },
   })
 
+  const onBackHandle = () => {
+    props.history.push("/home")
+  }
+
   return (
     <>
       <AdminLayout
@@ -49,7 +54,8 @@ const UserData: React.FC = (props: any) => {
         loading={loading}
         username={data?.userslogs.username}
       >
-        <FirstRowStyled marginTop={25}>
+        <FirstRowStyled>
+          <BtnBack onBack={onBackHandle} color="primary" />
           <IonCol>
             {listload ? (
               <>loading....</>
