@@ -36,13 +36,10 @@ const Register: React.FC = (props: any) => {
   const [errorLowerCase, setErrorLowerCase] = useState<boolean>(false)
   const [errorNumbers, setErrorNumbers] = useState<boolean>(false)
   const [errorMinMax, setErrorMinMax] = useState<boolean>(false)
-  const [errorConfirmPassword, setErrorConfirmPassword] = useState<boolean>(
-    false
-  )
-  const [
-    errorUserNameSimilarity,
-    setErrorUserNameSimilarity,
-  ] = useState<boolean>(false)
+  const [errorConfirmPassword, setErrorConfirmPassword] =
+    useState<boolean>(false)
+  const [errorUserNameSimilarity, setErrorUserNameSimilarity] =
+    useState<boolean>(false)
   const [errorCreate, setErrorCreate] = useState<boolean>(false)
   const [messageError, setMessageError] = useState<string>("")
   const [confirmCreate, setConfirmCreate] = useState<boolean>(false)
@@ -58,12 +55,20 @@ const Register: React.FC = (props: any) => {
     onCompleted: ({ register }) => {
       if (!register.success) {
         console.log(register.errors)
-        setMessageError("error")
+        if (register.errors.email) {
+          setMessageError("Error: " + register.errors.email[0].message)
+          return setErrorCreate(true)
+        }
+        if (register.errors.username) {
+          setMessageError("Error: " + register.errors.username[0].message)
+          return setErrorCreate(true)
+        }
+
+        setMessageError("Error")
         setErrorCreate(true)
       } else {
         setConfirmCreate(true)
-        localStorage.setItem("token", register.token!)
-        localStorage.setItem("refreshToken", register.refreshToken!)
+        props.history.push("/login")
       }
     },
   })
@@ -213,7 +218,8 @@ const Register: React.FC = (props: any) => {
   }, [username])
 
   useEffect(() => {
-    const regex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/
+    const regex =
+      /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/
 
     regex.test(email) ? setEmailValidate(true) : setEmailValidate(false)
   }, [email])

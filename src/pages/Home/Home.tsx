@@ -149,6 +149,7 @@ const Home: React.FC = (props: any) => {
       token: token,
     },
     onCompleted: ({ userslogs }) => {
+      console.log(userslogs)
       if (!userslogs.activar) {
         props.history.push("/registerdata")
       }
@@ -166,17 +167,18 @@ const Home: React.FC = (props: any) => {
     },
   })
 
-  const { loading: loadFile, data: fileData, error: errorData } = useQuery(
-    FILES,
-    {
-      variables: {
-        id: idUser,
-        name: "",
-      },
-      skip: skipQuery,
-      fetchPolicy: "network-only",
-    }
-  )
+  const {
+    loading: loadFile,
+    data: fileData,
+    error: errorData,
+  } = useQuery(FILES, {
+    variables: {
+      id: idUser,
+      name: "",
+    },
+    skip: skipQuery,
+    fetchPolicy: "network-only",
+  })
 
   useEffect(() => {
     if (!skipQuery) {

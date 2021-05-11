@@ -150,18 +150,18 @@ const Init: React.FC = (props: any) => {
         <HeaderLogo />
         {!loading && (
           <FirstRowStyled>
-            {/* {!error ? ( */}
-            <IonCol>
-              <BtnPrimary name="Login" onClickHandle={loginHandle} />
-              <BtnPrimary
-                color="second"
-                name="Register"
-                onClickHandle={registerHandle}
-              />
-            </IonCol>
-            {/* ) : (
+            {!error ? (
+              <IonCol>
+                <BtnPrimary name="Login" onClickHandle={loginHandle} />
+                <BtnPrimary
+                  color="second"
+                  name="Register"
+                  onClickHandle={registerHandle}
+                />
+              </IonCol>
+            ) : (
               <BtnPrimary name="Descargar" onClickHandle={download} />
-            )} */}
+            )}
           </FirstRowStyled>
         )}
 

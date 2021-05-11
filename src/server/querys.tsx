@@ -3,13 +3,14 @@ import { gql } from "@apollo/client"
 export const Query = {
   query: {
     user: gql`
-      query($token: String!) {
+      query ($token: String!) {
         userslogs(token: $token) {
           username
           email
           activar
           pk
           id
+          firsLog
           saldoSet {
             saldo
           }
@@ -17,7 +18,7 @@ export const Query = {
       }
     `,
     userdata: gql`
-      query($token: String!) {
+      query ($token: String!) {
         userslogs(token: $token) {
           id
           email
@@ -33,7 +34,7 @@ export const Query = {
       }
     `,
     allfiles: gql`
-      query($name: String!, $id: ID!) {
+      query ($name: String!, $id: ID!) {
         allUploads(nombre_Icontains: $name, idUser: $id) {
           edges {
             node {
@@ -57,7 +58,7 @@ export const Query = {
       }
     `,
     login: gql`
-      query($username: String!, $password: String!) {
+      query ($username: String!, $password: String!) {
         tokenAuth(username: $username, password: $password) {
           refreshToken
           token
@@ -70,7 +71,7 @@ export const Query = {
       }
     `,
     consultaRazon: gql`
-      query($id: Int!) {
+      query ($id: Int!) {
         consultaRazonSocial(id: $id) {
           id
           pk
@@ -86,7 +87,7 @@ export const Query = {
       }
     `,
     listRazon: gql`
-      query($idUser: Int!) {
+      query ($idUser: Int!) {
         razonSocial2(idUser: $idUser) {
           edges {
             node {
@@ -119,14 +120,14 @@ export const Query = {
   },
   mutation: {
     verify: gql`
-      mutation($token: String!) {
+      mutation ($token: String!) {
         verifyToken(token: $token) {
           payload
         }
       }
     `,
     refreshToken: gql`
-      mutation($refresh: String!) {
+      mutation ($refresh: String!) {
         refreshToken(refreshToken: $refresh) {
           payload
           token
@@ -134,7 +135,7 @@ export const Query = {
       }
     `,
     create: gql`
-      mutation(
+      mutation (
         $username: String!
         $password1: String!
         $password2: String!
@@ -160,7 +161,7 @@ export const Query = {
       }
     `,
     verifyAccount: gql`
-      mutation($token: String!) {
+      mutation ($token: String!) {
         verifyAccount(token: $token) {
           success
           errors
@@ -168,7 +169,7 @@ export const Query = {
       }
     `,
     update: gql`
-      mutation(
+      mutation (
         $email: String!
         $firstName: String!
         $lastName: String!
@@ -199,7 +200,7 @@ export const Query = {
       }
     `,
     upload: gql`
-      mutation(
+      mutation (
         $nombre: String!
         $idUserId: Int!
         $thefile: String!
@@ -216,7 +217,7 @@ export const Query = {
       }
     `,
     sendPasswordReset: gql`
-      mutation($email: String!) {
+      mutation ($email: String!) {
         sendPasswordResetEmail(email: $email) {
           success
           errors
@@ -224,7 +225,7 @@ export const Query = {
       }
     `,
     PasswordReset: gql`
-      mutation(
+      mutation (
         $token: String!
         $newPassword1: String!
         $newPassword2: String!
@@ -240,14 +241,14 @@ export const Query = {
       }
     `,
     delete: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteUser(id: $id) {
           ok
         }
       }
     `,
     updateConfig: gql`
-      mutation(
+      mutation (
         $id: ID!
         $orientacion: String!
         $printTypes: String!
@@ -273,7 +274,7 @@ export const Query = {
       }
     `,
     controlUser: gql`
-      mutation($idUser: ID!, $tokenNW: String!) {
+      mutation ($idUser: ID!, $tokenNW: String!) {
         createControlUserData(
           id: $idUser
           idtotemUsado: 0
@@ -286,7 +287,7 @@ export const Query = {
       }
     `,
     solictAbono: gql`
-      mutation($idUser: Int!) {
+      mutation ($idUser: Int!) {
         idAbono(idUserId: $idUser, estado: 1) {
           success
           error
@@ -294,7 +295,7 @@ export const Query = {
       }
     `,
     updateAbono: gql`
-      mutation($idAbono: ID!, $amount: Int!, $dte: Int!, $idRazon: Int!) {
+      mutation ($idAbono: ID!, $amount: Int!, $dte: Int!, $idRazon: Int!) {
         updateAbono(
           id: $idAbono
           IdsaldoAbono: $amount
@@ -309,7 +310,7 @@ export const Query = {
       }
     `,
     createRazon: gql`
-      mutation(
+      mutation (
         $city: String!
         $municipio: String!
         $rutRazon: String!
@@ -335,7 +336,7 @@ export const Query = {
       }
     `,
     updateRazon: gql`
-      mutation(
+      mutation (
         $id: ID!
         $city: String!
         $municipio: String!
