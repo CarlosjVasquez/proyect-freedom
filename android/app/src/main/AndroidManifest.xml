@@ -34,7 +34,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="freedom-totem.herokuapp.com" android:pathPrefix="/xirux" />
             </intent-filter>
-
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="freedom-totem.herokuapp.com" android:pathPrefix="/xirux/confirmemail/:id" />
+            </intent-filter>
         </activity>
 
         <provider

@@ -10,7 +10,6 @@ export const Query = {
           activar
           pk
           id
-          firsLog
           saldoSet {
             saldo
           }
