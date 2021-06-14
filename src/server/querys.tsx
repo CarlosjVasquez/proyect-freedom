@@ -51,6 +51,7 @@ export const Query = {
               idConfig
               nhojas
               price
+              keyName
             }
           }
         }
@@ -199,19 +200,10 @@ export const Query = {
       }
     `,
     upload: gql`
-      mutation (
-        $nombre: String!
-        $idUserId: Int!
-        $thefile: String!
-        $created: String!
-      ) {
-        myUpload(
-          nombre: $nombre
-          idUserId: $idUserId
-          thefile: $thefile
-          created: $created
-        ) {
+      mutation ($file: Upload!, $nombre: String!, $id: Int!) {
+        myUpload(nombre: $nombre, idUserId: $id, subirArchivo: $file) {
           success
+          error
         }
       }
     `,

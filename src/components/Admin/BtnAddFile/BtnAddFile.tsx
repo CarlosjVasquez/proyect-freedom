@@ -39,7 +39,6 @@ const BtnAddFile: React.FC<{
 }> = ({ color, onSuccess, idUser, fill, size }) => {
   const [thefile, setThefile] = useState<any>(null)
   const [nombre, setNombre] = useState<string>("")
-  const [create, setCreate] = useState<string>("")
   const [showModal, setShowModal] = useState(false)
   const [numPages, setNumPages] = useState(0)
   const [pageNumber, setPageNumber] = useState(1)
@@ -53,41 +52,20 @@ const BtnAddFile: React.FC<{
     setNumPages(data.numPages)
   }
 
-  // const [uplo] = useMutation<{ myUpload: any }>(up, {
-  //   variables: {
-  //     nombre: nombre,
-  //     idUserId: idUser,
-  //     thefile: thefile,
-  //     created: create,
-  //   },
-  //   onCompleted: () => {
-  //     onSuccess(false)
-  //   },
-  //   onError: (e) => {
-  //     console.log(e)
-  //   },
-  // })
-
-  // const widget = (window as any).cloudinary.createUploadWidget(
-  //   {
-  //     cloudName: "dhdjnyxht",
-  //     uploadPreset: "iqspxphc",
-  //   },
-  //   (error: any, result: any) => checkUploadResult(result)
-  // )
-
-  // const checkUploadResult = (resultEvent: any) => {
-  //   if (resultEvent.event === "success") {
-  //     setThefile(resultEvent.info.secure_url)
-  //     setNombre(resultEvent.info.original_filename)
-  //     setCreate(resultEvent.info.created_at)
-  //     uplo()
-  //   }
-  // }
-
-  // const showWidget = () => {
-  //   widget.open()
-  // }
+  const [uplo] = useMutation<{ myUpload: any }>(up, {
+    variables: {
+      file: thefile,
+      nombre: nombre,
+      id: idUser,
+    },
+    onCompleted: () => {
+      setShowModal(false)
+      onSuccess(false)
+    },
+    onError: (e) => {
+      console.log(e)
+    },
+  })
 
   return (
     <>
@@ -121,12 +99,12 @@ const BtnAddFile: React.FC<{
                   <CardStyled>
                     <IonCardContent>
                       <DocumentStyled
-                        file={thefile ? thefile.item(0) : null}
+                        file={thefile ? thefile : null}
                         onLoadSuccess={onDocumentLoadSuccess}
                       >
                         <PageStyled pageNumber={pageNumber} />
                       </DocumentStyled>
-                      {thefile && thefile.item(0) && (
+                      {thefile && (
                         <PaginateStyled>
                           <p>
                             {pageNumber > 1 && pageNumber <= numPages && (
@@ -155,14 +133,24 @@ const BtnAddFile: React.FC<{
                     ref={fileInput}
                     hidden
                     type="file"
-                    onChange={(e) => setThefile(e.currentTarget.files)}
+                    onChange={({
+                      target: {
+                        validity,
+                        files: [file],
+                      },
+                    }: any) => {
+                      if (validity.valid) {
+                        setNombre(file.name)
+                        setThefile(file)
+                      }
+                    }}
                     multiple={false}
                     accept="application/pdf"
                   />
                 </IonCol>
               </IonRow>
               <IonRow>
-                {thefile && thefile.item(0) ? (
+                {thefile ? (
                   <ButtonsStyled>
                     <IonButton
                       color="primary"
@@ -176,7 +164,7 @@ const BtnAddFile: React.FC<{
                       color="secondary"
                       shape="round"
                       fill="solid"
-                      onClick={() => console.log("hola")}
+                      onClick={() => uplo()}
                     >
                       Upload
                     </IonButton>

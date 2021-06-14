@@ -149,7 +149,6 @@ const Home: React.FC = (props: any) => {
       token: token,
     },
     onCompleted: ({ userslogs }) => {
-      console.log(userslogs)
       if (!userslogs.activar) {
         props.history.push("/registerdata")
       }

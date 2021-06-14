@@ -106,7 +106,7 @@ const File: React.FC<{
       <ItemStyled button onClick={() => setActive(!active)}>
         <IonIcon color="primary" slot="start" size="med" icon={documentopdf} />
         <IonLabel>
-          <TitleStyled>{file.node.nombre}</TitleStyled>
+          <TitleStyled>{file.node.keyName}</TitleStyled>
           <CreateStyled>
             Created: {new Date(file.node.created).toLocaleString()}
           </CreateStyled>
