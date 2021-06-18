@@ -260,7 +260,7 @@ const Home: React.FC = (props: any) => {
   }
 
   const rechargeAmount = () => {
-    const url = `https://hyhlibertad2.herokuapp.com/webpay/webpay-plus-create/${idAbono}`
+    const url = `https://hyhlibertad2.herokuapp.com/webpay/webpay-plus-create/${idAbono}/1`
     setShowModal(false)
     setAmount("3000")
     setDte("boleta")
